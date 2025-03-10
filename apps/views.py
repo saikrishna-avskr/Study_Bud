@@ -17,9 +17,8 @@ import google.generativeai as genai2
 from tabulate import tabulate
 from datetime import datetime
 
-# Configure the API key (ideally, store this in settings or environment variables)
-GOOGLE_API_KEY = "AIzaSyBc9SOQ56DTARMQ8CZxRpeJg_Jh2DDUROM"  # Replace with your actual API key
-genai2.configure(api_key=GOOGLE_API_KEY)
+
+genai2.configure(api_key=os.getenv("GEMINI_API_KEY"))
 model = genai2.GenerativeModel('gemini-2.0-flash')
 
 load_dotenv()
@@ -34,9 +33,12 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 def generate_code(request):
     if request.method=="POST":
         problem_statement = request.POST.get("problem_statement")
-        language = request.POST.get("language")        
+        language = request.POST.get("language")     
+        explanguage = request.POST.get("explanguage")   
+        if explanguage is None:
+            explanguage='english'
         response = client.models.generate_content(
-            model='gemini-2.0-flash', contents=problem_statement+". Generate program in "+language+".",
+            model='gemini-2.0-flash', contents=problem_statement+". Generate program in "+language+". Explain the code in "+explanguage+".",
         )
         return render(request, "code_generator.html", {"response": markdown.markdown(response.text)})
     else:
@@ -116,7 +118,7 @@ def evaluate_assignment(request):
         if user_answer and current_question:
             response = client.models.generate_content(
                 model='gemini-2.0-flash', 
-                contents=f"Evaluate the following answer: {user_answer} for the question: {current_question}.",
+                contents=f"Evaluate the following answer: {user_answer} for the question: {current_question}.Grade the answer. Explain the answer if it is wrong. Give ways to improve the answer if needed.",
             )
             evaluation_response = response.text
         context = {
@@ -132,11 +134,7 @@ def evaluate_assignment(request):
 
 from datetime import datetime
 import markdown
-from tabulate import tabulate  # Ensure you have the tabulate library installed
-
-# Assuming `model.generate_content()` is a mock or placeholder for a function 
-# that generates the content based on the prompt.
-# You can replace it with actual logic for generative AI content generation.
+from tabulate import tabulate  
 
 def get_current_date():
     return datetime.now().date()
@@ -158,31 +156,25 @@ def generate_study_plan(user_inputs):
     2. A table summarizing the daily study schedule.
     """
     try:
-        response = model.generate_content(prompt)  # Replace with your generative AI model
+        response = model.generate_content(prompt) 
         return response.text
     except Exception as e:
         return f"An error occurred: {e}"
 
 def extract_table(study_plan_text):
-    # Start searching for the table part
     table_start = study_plan_text.find("Day")
     if table_start == -1:
         return "Table not found."
 
-    table_string = study_plan_text[table_start:]  # Extracting table text
+    table_string = study_plan_text[table_start:] 
     lines = table_string.strip().split('\n')
     table_data = []
-    
-    # Splitting lines into cells using '|' as separator
     header = [cell.strip() for cell in lines[0].split('|') if cell.strip()]
     for line in lines[1:]:
         row = [cell.strip() for cell in line.split('|') if cell.strip()]
         if row:
             table_data.append(row)
-    
-    # Create HTML table using the tabulate library
-    return tabulate(table_data, headers=header, tablefmt="html")  # "html" format for rendering in HTML
-
+    return tabulate(table_data, headers=header, tablefmt="html")  
 def study_plan_view(request):
     if request.method == 'POST':
         user_inputs = {
@@ -203,4 +195,5 @@ def study_plan_view(request):
 
         return render(request, 'study_plan.html', {'study_plan_text': markdown.markdown(study_plan_text), 'table':table})
 
-    return render(request, 'study_plan.html')  # Render the form initially
+    return render(request, 'study_plan.html')  
+
