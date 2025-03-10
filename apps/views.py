@@ -1,5 +1,6 @@
 from django.shortcuts import render
 import os
+from google.cloud import vision
 import markdown
 from pathlib import Path
 import typing
@@ -197,3 +198,71 @@ def study_plan_view(request):
 
     return render(request, 'study_plan.html')  
 
+import io
+import numpy as np
+import cv2
+from google.cloud import vision
+from google.oauth2 import service_account
+from django.conf import settings
+from django.shortcuts import render
+
+# Path to your credentials JSON file
+credentials_path = settings.BASE_DIR / "credentials.json"
+# Authenticate using the credentials file
+credentials = service_account.Credentials.from_service_account_file(credentials_path)
+
+# Initialize the Vision API client with the credentials
+client1 = vision.ImageAnnotatorClient(credentials=credentials)
+
+def annotate_image(image_path):
+    """Annotates an image using Google Cloud Vision API."""
+    with io.open(image_path, 'rb') as image_file:
+        content = image_file.read()
+
+    image = vision.Image(content=content)
+
+    response = client1.label_detection(image=image)
+    labels = response.label_annotations
+
+    response = client1.object_localization(image=image)
+    objects = response.localized_object_annotations
+
+    return labels, objects
+
+def draw_bounding_boxes(image_path, objects):
+    """Draws bounding boxes on the image and returns the annotated image path."""
+    image = cv2.imread(image_path)
+
+    for obj in objects:
+        vertices = [(int(vertex.x * image.shape[1]), int(vertex.y * image.shape[0])) for vertex in obj.bounding_poly.normalized_vertices]
+        cv2.polylines(image, [np.array(vertices)], isClosed=True, color=(0, 255, 0), thickness=2)
+        object_name = obj.name
+        score = obj.score
+        label = f"{object_name} ({score*100:.2f}%)"
+        top_left = (vertices[0][0], vertices[0][1] - 10)
+        cv2.putText(image, label, top_left, cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+
+    output_image_path = settings.BASE_DIR / "annotated_image.jpg"
+    cv2.imwrite(output_image_path, image)
+    return output_image_path
+
+def annotate_image_view(request):
+    """Django view to handle image annotation."""
+    if request.method == 'POST' and request.FILES.get('image'):
+        image_file = request.FILES['image']
+        image_path = settings.BASE_DIR / "temp_image.jpg"
+
+        with open(image_path, 'wb+') as destination:
+            for chunk in image_file.chunks():
+                destination.write(chunk)
+
+        labels, objects = annotate_image(image_path)
+        output_image_path = draw_bounding_boxes(image_path, objects)
+
+        return render(request, 'annotated_image.html', {
+            'labels': labels,
+            'objects': objects,
+            'output_image': output_image_path,
+        })
+
+    return render(request, 'upload_image.html')

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Annotated Image</title>
+</head>
+<body>
+    <h2>Detected Labels:</h2>
+    <ul>
+        {% for label in labels %}
+            <li>{{ label.description }} (Score: {{ label.score }})</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Detected Objects:</h2>
+    <ul>
+        {% for obj in objects %}
+            <li>{{ obj.name }} (Score: {{ obj.score }})</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Annotated Image:</h2>
+    <img src="/{{ output_image }}" alt="Annotated Image">
+</body>
+</html>
