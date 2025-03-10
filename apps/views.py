@@ -12,13 +12,14 @@ import base64
 from PIL import Image
 from google import genai
 import PyPDF2
-import markdown
 from dotenv import load_dotenv
 import google.generativeai as genai2
 from tabulate import tabulate
 from datetime import datetime
 import numpy as np  
 import cv2
+import tempfile
+import json
 
 load_dotenv()
 genai2.configure(api_key=os.getenv("GEMINI_API_KEY"))
@@ -76,18 +77,39 @@ def image_to_base64(image: typing.Any) -> str:
     pil_image.save(buffered, format="PNG")
     return base64.b64encode(buffered.getvalue()).decode("utf-8")
 
+credentials_info = {
+    "type": os.getenv("TYPE"),
+    "project_id": os.getenv("PROJECT_ID"),
+    "private_key_id": os.getenv("PRIVATE_KEY_ID"),
+    "private_key": os.getenv("PRIVATE_KEY").replace("\\n", "\n"),
+    "client_email": os.getenv("CLIENT_EMAIL"),
+    "client_id": os.getenv("CLIENT_ID"),
+    "auth_uri": os.getenv("AUTH_URI"),
+    "token_uri": os.getenv("TOKEN_URI"),
+    "auth_provider_x509_cert_url": os.getenv("AUTH_PROVIDER_X509_CERT_URL"),
+    "client_x509_cert_url": os.getenv("CLIENT_X509_CERT_URL"),
+    "universe_domain": os.getenv("UNIVERSE_DOMAIN")
+}
+print(credentials_info)
+
+### Uncomment the following code if you are deploying on locally
+# credentials_path = os.path.join(tempfile.gettempdir(), "credentials.json")
+credentials_path = "/tmp/credentials.json"
+with open(credentials_path, "w") as f:
+    json.dump(credentials_info, f)
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credentials_path
+
+credentials = service_account.Credentials.from_service_account_info(credentials_info)
+
 def generate_image(request): 
     if request.method == "POST":
         prompt = request.POST.get("prompt")
-        credentials_path = BASE_DIR / "credentials.json"
-        init_vertex_ai(project="gen-lang-client-0978853110", location="us-central1", credentials_path=credentials_path)
+        init_vertex_ai(project=os.getenv("PROJECT_ID"), location=os.getenv("LOCATION"), credentials_path=credentials_path)
         images = generate_images_from_prompt(prompt=prompt)
         image_base64 = image_to_base64(images[0])
         return render(request, "image_generation.html", {"image_base64": image_base64})
     else:
         return render(request, "image_generation.html") 
-
-
 
 def evaluate_assignment(request):
     if request.method == "POST":
@@ -132,9 +154,6 @@ def evaluate_assignment(request):
         
         return render(request, "evaluate_assignment.html", context)    
     return render(request, "upload_assignment.html")
-
-
-
 
 def get_current_date():
     return datetime.now().date()
@@ -197,9 +216,6 @@ def study_plan_view(request):
 
     return render(request, 'study_plan.html')  
 
-
-credentials_path = BASE_DIR / "credentials.json"
-credentials = service_account.Credentials.from_service_account_file(credentials_path)
 client1 = vision.ImageAnnotatorClient(credentials=credentials)
 
 def annotate_image(image_path):
