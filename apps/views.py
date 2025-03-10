@@ -17,8 +17,7 @@ from dotenv import load_dotenv
 import google.generativeai as genai2
 from tabulate import tabulate
 from datetime import datetime
-import numpy as np  
-import cv2
+
 
 load_dotenv()
 genai2.configure(api_key=os.getenv("GEMINI_API_KEY"))
@@ -138,34 +137,8 @@ from datetime import datetime
 import markdown
 from tabulate import tabulate  
 
-client2=texttospeech.TextToSpeechClient()
 def get_current_date():
     return datetime.now().date()
-
-
-def text_to_speech(text, output_audio_path="output_audio.mp3"):
-    synthesis_input = texttospeech.SynthesisInput(text=text)
-
-    voice = texttospeech.VoiceSelectionParams(
-        language_code="en-US", 
-        ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL 
-    )
-    audio_config = texttospeech.AudioConfig(
-        audio_encoding=texttospeech.AudioEncoding.MP3  # You can change to LINEAR16, OGG_OPUS, etc.
-    )
-
-    response = client2.synthesize_speech(
-        input=synthesis_input,
-        voice=voice,
-        audio_config=audio_config
-    )
-    with open(output_audio_path, "wb") as out:
-        out.write(response.audio_content)
-
-    print(f"Audio content written to file: {output_audio_path}")
-    return output_audio_path
-
-
 
 def generate_study_plan(user_inputs):
     prompt = f"""
@@ -185,11 +158,7 @@ def generate_study_plan(user_inputs):
     """
     try:
         response = model.generate_content(prompt) 
-        audio_path = text_to_speech(response.text)
-        return {
-            "study_plan_text": response.text,
-            "audio_path": audio_path
-        }
+        return response.text
     except Exception as e:
         return f"An error occurred: {e}"
 
@@ -207,7 +176,6 @@ def extract_table(study_plan_text):
         if row:
             table_data.append(row)
     return tabulate(table_data, headers=header, tablefmt="html")  
-
 def study_plan_view(request):
     if request.method == 'POST':
         user_inputs = {
@@ -218,11 +186,7 @@ def study_plan_view(request):
             'methods': request.POST.get('methods'),
             'notes': request.POST.get('notes'),
         }
-
-        result = generate_study_plan(user_inputs)
-        study_plan_text = result["study_plan_text"]
-        audio_path = result["audio_path"] 
-
+        study_plan_text = generate_study_plan(user_inputs)
         table = None
         try:
             table = extract_table(study_plan_text)
@@ -230,13 +194,9 @@ def study_plan_view(request):
             error_message = f"Could not generate table: {e}"
             return render(request, 'study_plan.html', {'study_plan_text': study_plan_text, 'error': error_message})
 
-        return render(request, 'study_plan.html', {
-            'study_plan_text': markdown.markdown(study_plan_text), 
-            'table': table, 
-            'audio_path': audio_path 
-        })
+        return render(request, 'study_plan.html', {'study_plan_text': markdown.markdown(study_plan_text), 'table':table})
 
-    return render(request, 'study_plan.html')
+    return render(request, 'study_plan.html')  
 
 import io
 import numpy as np
@@ -255,6 +215,7 @@ credentials = service_account.Credentials.from_service_account_file(credentials_
 client1 = vision.ImageAnnotatorClient(credentials=credentials)
 
 def annotate_image(image_path):
+    """Annotates an image using Google Cloud Vision API."""
     with io.open(image_path, 'rb') as image_file:
         content = image_file.read()
 
@@ -269,6 +230,7 @@ def annotate_image(image_path):
     return labels, objects
 
 def draw_bounding_boxes(image_path, objects):
+    """Draws bounding boxes on the image and returns the annotated image path."""
     image = cv2.imread(image_path)
 
     for obj in objects:
@@ -279,34 +241,28 @@ def draw_bounding_boxes(image_path, objects):
         label = f"{object_name} ({score*100:.2f}%)"
         top_left = (vertices[0][0], vertices[0][1] - 10)
         cv2.putText(image, label, top_left, cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-    _, buffer = cv2.imencode('.png', image)
-    image_bytes = buffer.tobytes()
-    encoded_image = base64.b64encode(image_bytes).decode("utf-8")
-    
-    return encoded_image
 
+    output_image_path = BASE_DIR / "annotated_image.jpg"
+    cv2.imwrite(output_image_path, image)
+    return output_image_path
 
 def annotate_image_view(request):
+    """Django view to handle image annotation."""
     if request.method == 'POST' and request.FILES.get('image'):
         image_file = request.FILES['image']
-        image_path = BASE_DIR / "temp_image.jpg"
+        image_path = settings.BASE_DIR / "temp_image.jpg"
+
         with open(image_path, 'wb+') as destination:
             for chunk in image_file.chunks():
                 destination.write(chunk)
+
         labels, objects = annotate_image(image_path)
-        base64_image = draw_bounding_boxes(image_path, objects)
-        prompt = f"""
-        Use the following {labels} and give me a description about the entity present.
-        """
-        
-        response = model.generate_content(prompt) 
-        # return response.text
+        output_image_path = draw_bounding_boxes(image_path, objects)
+
         return render(request, 'annotated_image.html', {
             'labels': labels,
             'objects': objects,
-            'base64_image': base64_image,
-            'prompttext': markdown.markdown(response.text)
-            
+            'output_image': output_image_path,
         })
 
     return render(request, 'upload_image.html')
