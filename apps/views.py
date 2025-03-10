@@ -18,10 +18,10 @@ from tabulate import tabulate
 from datetime import datetime
 
 
+load_dotenv()
 genai2.configure(api_key=os.getenv("GEMINI_API_KEY"))
 model = genai2.GenerativeModel('gemini-2.0-flash')
 
-load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 

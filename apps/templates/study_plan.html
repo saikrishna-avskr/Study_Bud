@@ -1,63 +1,288 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Study Plan Generator</title>
     <style>
-        /* Basic table styling */
+        /* Resetting some default styles */
+        body, h1, h2, p, input, textarea, label {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* General body styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            /* background: linear-gradient(145deg, #2E4A7F, #4B6CB7);
+             */
+            
+            background: linear-gradient(145deg, #ff6b6b, #f7b7a3, #4e73df); 
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #fff;
+            text-align: center;
+            animation: fadeIn 1s ease-out;
+        }
+
+        /* Fade-in effect for header */
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-top: 20px;
+            color: #fff;
+            text-align: center;
+        }
+
+        /* Form styling */
+        form {
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 30px;
+            animation: slideIn 1s ease-out;
+        }
+
+        /* Slide-in effect for form */
+        @keyframes slideIn {
+            0% { opacity: 0; transform: translateX(-30px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        label {
+            font-size: 18px;
+            margin-bottom: 5px;
+            display: block;
+            color: #f9f9f9;
+        }
+
+        input[type="text"], input[type="date"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+            background-color: #333;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="submit"] {
+            background: linear-gradient(145deg, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeInButton 1.5s forwards;
+        }
+
+        /* Fade-in animation for button */
+        @keyframes fadeInButton {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        input[type="submit"]:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        textarea {
+            resize: none;
+            height: 150px;
+        }
+
+        /* Table styling */
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 30px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            animation: fadeInTable 1s ease-out;
+            max-width: 100%;
+            word-wrap: break-word;
+            table-layout: fixed;
+        }
+
+        /* Fade-in effect for table */
+        @keyframes fadeInTable {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 18px;
+        }
+
+        td {
+            background-color: #f9f9f9;
+            color: #333;
+            font-size: 16px;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f1f1f1;
+        }
+
+        tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Error message styling */
+        p.error {
+            color: red;
+            font-size: 18px;
+            margin-top: 20px;
+            animation: shake 0.5s ease-out;
+        }
+
+        /* Shake animation for error message */
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            form {
+                padding: 20px;
+            }
+
+            input[type="submit"] {
+                padding: 12px 24px;
+            }
+        }
+
+        /* Container for study plan text to prevent overflow */
+        pre {
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            max-width: 100%;
+            overflow-wrap: break-word;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            color: #f9f9f9;
+            font-size: 16px;
+            max-width: 100%;
             margin-top: 20px;
         }
-        table, th, td {
-            border: 1px solid black;
+
+        /* Loading spinner styling */
+        .loading-spinner {
+            display: none;
+            border: 5px solid #f3f3f3; /* Light grey */
+            border-top: 5px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+            margin-top: 20px;
         }
-        th, td {
-            padding: 8px;
-            text-align: left;
+
+        /* Spin animation */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
-        th {
-            background-color: #f2f2f2;
-        }
+
     </style>
 </head>
 <body>
+    
     <h1>Study Plan Generator</h1>
-    <form method="post">
+    <form method="post" id="study-plan-form">
         {% csrf_token %}
         <label for="subject">Subject:</label><br>
-        <input type="text" id="subject" name="subject"><br><br>
+        <input type="text" id="subject" name="subject" required><br>
 
         <label for="exam_date">Exam Date:</label><br>
-        <input type="date" id="exam_date" name="exam_date"><br><br>
+        <input type="date" id="exam_date" name="exam_date" required><br>
 
-        <label for="study_time">Study Time per Day:</label><br>
-        <input type="text" id="study_time" name="study_time"><br><br>
+        <label for="study_time">Study Time per Day (hours):</label><br>
+        <input type="text" id="study_time" name="study_time" required><br>
 
         <label for="topics">Topics:</label><br>
-        <input type="text" id="topics" name="topics"><br><br>
+        <input type="text" id="topics" name="topics" required><br>
 
         <label for="methods">Study Methods:</label><br>
-        <input type="text" id="methods" name="methods"><br><br>
+        <input type="text" id="methods" name="methods"><br>
 
-        <label for="notes">Notes:</label><br>
-        <textarea id="notes" name="notes"></textarea><br><br>
+        <label for="notes">Additional Notes:</label><br>
+        <textarea id="notes" name="notes"></textarea><br>
 
         <input type="submit" value="Generate Plan">
     </form>
+
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="loading-spinner"></div>
 
     {% if study_plan_text %}
         <h2>Study Plan:</h2>
         <pre>{{ study_plan_text|safe }}</pre>
     {% endif %}
-
+<!-- 
     {% if table %}
         <h2>Daily Schedule:</h2>
-        <div>{{ table|safe }}</div>  <!-- Render the HTML table here -->
-    {% endif %}
+        <div>{{ table|safe }}</div>
+    {% endif %} -->
 
     {% if error %}
-        <p style="color: red;">{{ error }}</p>
+        <p class="error">{{ error }}</p>
     {% endif %}
+
+    <script>
+        // Add event listener for form submission
+        const form = document.getElementById("study-plan-form");
+        const spinner = document.getElementById("loading-spinner");
+
+        form.addEventListener("submit", function(event) {
+            // Show loading spinner and prevent form submission
+            spinner.style.display = "block";
+            event.preventDefault();
+
+            // Simulate form submission with a delay (e.g., using setTimeout for demonstration)
+            setTimeout(function() {
+                form.submit();
+            }, 2000); // Simulated delay for demonstration
+        });
+    </script>
 </body>
 </html>
