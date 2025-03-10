@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Study Plan Generator</title>
+    <style>
+        /* Basic table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Study Plan Generator</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="subject">Subject:</label><br>
+        <input type="text" id="subject" name="subject"><br><br>
+
+        <label for="exam_date">Exam Date:</label><br>
+        <input type="date" id="exam_date" name="exam_date"><br><br>
+
+        <label for="study_time">Study Time per Day:</label><br>
+        <input type="text" id="study_time" name="study_time"><br><br>
+
+        <label for="topics">Topics:</label><br>
+        <input type="text" id="topics" name="topics"><br><br>
+
+        <label for="methods">Study Methods:</label><br>
+        <input type="text" id="methods" name="methods"><br><br>
+
+        <label for="notes">Notes:</label><br>
+        <textarea id="notes" name="notes"></textarea><br><br>
+
+        <input type="submit" value="Generate Plan">
+    </form>
+
+    {% if study_plan_text %}
+        <h2>Study Plan:</h2>
+        <pre>{{ study_plan_text|safe }}</pre>
+    {% endif %}
+
+    {% if table %}
+        <h2>Daily Schedule:</h2>
+        <div>{{ table|safe }}</div>  <!-- Render the HTML table here -->
+    {% endif %}
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+</body>
+</html>

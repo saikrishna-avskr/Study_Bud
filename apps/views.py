@@ -13,6 +13,14 @@ from google import genai
 import PyPDF2
 import markdown
 from dotenv import load_dotenv
+import google.generativeai as genai2
+from tabulate import tabulate
+from datetime import datetime
+
+# Configure the API key (ideally, store this in settings or environment variables)
+GOOGLE_API_KEY = "AIzaSyBc9SOQ56DTARMQ8CZxRpeJg_Jh2DDUROM"  # Replace with your actual API key
+genai2.configure(api_key=GOOGLE_API_KEY)
+model = genai2.GenerativeModel('gemini-2.0-flash')
 
 load_dotenv()
 
@@ -122,8 +130,77 @@ def evaluate_assignment(request):
     return render(request, "upload_assignment.html")
 
 
+from datetime import datetime
+import markdown
+from tabulate import tabulate  # Ensure you have the tabulate library installed
 
+# Assuming `model.generate_content()` is a mock or placeholder for a function 
+# that generates the content based on the prompt.
+# You can replace it with actual logic for generative AI content generation.
 
+def get_current_date():
+    return datetime.now().date()
 
-     
-     
+def generate_study_plan(user_inputs):
+    prompt = f"""
+    Generate a detailed study plan based on the following information:
+
+    Subject: {user_inputs['subject']}
+    Today is {get_current_date()}
+    Exam Date: {user_inputs['exam_date']}
+    Available Study Time per Day: {user_inputs['study_time']}
+    Specific Topics to Focus On: {user_inputs['topics']}
+    Preferred Study Methods: {user_inputs['methods']}
+    Any Other Important Notes: {user_inputs['notes']}
+
+    Please provide the study plan in two parts:
+    1. A detailed study plan with a day-by-day breakdown.
+    2. A table summarizing the daily study schedule.
+    """
+    try:
+        response = model.generate_content(prompt)  # Replace with your generative AI model
+        return response.text
+    except Exception as e:
+        return f"An error occurred: {e}"
+
+def extract_table(study_plan_text):
+    # Start searching for the table part
+    table_start = study_plan_text.find("Day")
+    if table_start == -1:
+        return "Table not found."
+
+    table_string = study_plan_text[table_start:]  # Extracting table text
+    lines = table_string.strip().split('\n')
+    table_data = []
+    
+    # Splitting lines into cells using '|' as separator
+    header = [cell.strip() for cell in lines[0].split('|') if cell.strip()]
+    for line in lines[1:]:
+        row = [cell.strip() for cell in line.split('|') if cell.strip()]
+        if row:
+            table_data.append(row)
+    
+    # Create HTML table using the tabulate library
+    return tabulate(table_data, headers=header, tablefmt="html")  # "html" format for rendering in HTML
+
+def study_plan_view(request):
+    if request.method == 'POST':
+        user_inputs = {
+            'subject': request.POST.get('subject'),
+            'exam_date': request.POST.get('exam_date'),
+            'study_time': request.POST.get('study_time'),
+            'topics': request.POST.get('topics'),
+            'methods': request.POST.get('methods'),
+            'notes': request.POST.get('notes'),
+        }
+        study_plan_text = generate_study_plan(user_inputs)
+        table = None
+        try:
+            table = extract_table(study_plan_text)
+        except Exception as e:
+            error_message = f"Could not generate table: {e}"
+            return render(request, 'study_plan.html', {'study_plan_text': study_plan_text, 'error': error_message})
+
+        return render(request, 'study_plan.html', {'study_plan_text': markdown.markdown(study_plan_text), 'table':table})
+
+    return render(request, 'study_plan.html')  # Render the form initially
