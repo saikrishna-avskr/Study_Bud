@@ -1,108 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Index Page</title>
     <style>
-        /* General body and layout styling */
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(145deg, #ff6b6b, #f7b7a3, #4e73df); /* Warm and cool gradient */
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow-y: scroll; /* Enable vertical scroll */
-            padding: 20px;
-        }
+      body {
+        font-family: "Arial", sans-serif;
+        background: linear-gradient(
+          145deg,
+          #ff6b6b,
+          #f7b7a3,
+          #4e73df
+        ); /* Warm and cool gradient */
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        overflow-y: scroll;
+        padding: 20px;
+      }
+      body::-webkit-scrollbar {
+        width: 10px;
+      }
 
-        /* Custom Scrollbar Styling */
-        body::-webkit-scrollbar {
-            width: 10px;
-        }
+      body::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
 
-        body::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
+      body::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+      }
 
-        body::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 10px;
-        }
+      body::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
 
-        body::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
+      h1 {
+        font-size: 36px;
+        margin-bottom: 20px;
+        text-align: center;
+        color: #fff;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
 
-        /* Heading */
-        h1 {
-            font-size: 36px;
-            margin-bottom: 20px;
-            text-align: center;
-            color: #fff;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
+      .link-button {
+        background: linear-gradient(145deg, #ff6b6b, #f7b7a3);
+        color: white;
+        padding: 15px 30px;
+        border-radius: 10px;
+        border: none;
+        font-size: 18px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        font-weight: bold;
+        margin: 10px;
+        text-align: center;
+        text-decoration: none;
+      }
 
-        /* Link buttons */
+      .link-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .nav-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      @media (max-width: 768px) {
         .link-button {
-            background: linear-gradient(145deg, #ff6b6b, #f7b7a3);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 10px;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            font-weight: bold;
-            margin: 10px;
-            text-align: center;
-            text-decoration: none;
+          padding: 12px 24px;
+          width: 90%;
         }
-
-        .link-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Navigation container */
-        .nav-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .link-button {
-                padding: 12px 24px;
-                width: 90%;
-            }
-        }
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <h1><u>Welcome to StudyBud</u></h1>
-    
     <div class="nav-container">
-        <a href="/study_plan/" class="link-button">Study Plan</a>
-        <!-- Link to Evaluate Assignment page -->
-        <a href="/evaluate_assignment/" class="link-button">Evaluate Assignment</a>
-        
-        <!-- Link to Image Generation page -->
-        <a href="/generate_image" class="link-button">Generate Image</a>
-        
-        <!-- Link to Code Generator page -->
-        <a href="/generate_code" class="link-button">Code Generator</a>
-
-        
+      <a href="/study_plan/" class="link-button">Study Plan</a>
+      <a href="/evaluate_assignment/" class="link-button"
+        >Evaluate Assignment</a
+      >
+      <a href="/generate_image" class="link-button">Generate Image</a>
+      <a href="/generate_code" class="link-button">Code Generator</a>
+      <a href="/annotate/" class="link-button">Discribe Image</a>
     </div>
-    
-</body>
+  </body>
 </html>
