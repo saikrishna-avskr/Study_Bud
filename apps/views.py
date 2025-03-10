@@ -136,9 +136,36 @@ def evaluate_assignment(request):
 from datetime import datetime
 import markdown
 from tabulate import tabulate  
+from google.cloud import texttospeech
 
+client2=texttospeech.TextToSpeechClient()
 def get_current_date():
     return datetime.now().date()
+
+
+def text_to_speech(text, output_audio_path="output_audio.mp3"):
+    synthesis_input = texttospeech.SynthesisInput(text=text)
+
+    voice = texttospeech.VoiceSelectionParams(
+        language_code="en-US", 
+        ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL 
+    )
+    audio_config = texttospeech.AudioConfig(
+        audio_encoding=texttospeech.AudioEncoding.MP3  # You can change to LINEAR16, OGG_OPUS, etc.
+    )
+
+    response = client2.synthesize_speech(
+        input=synthesis_input,
+        voice=voice,
+        audio_config=audio_config
+    )
+    with open(output_audio_path, "wb") as out:
+        out.write(response.audio_content)
+
+    print(f"Audio content written to file: {output_audio_path}")
+    return output_audio_path
+
+
 
 def generate_study_plan(user_inputs):
     prompt = f"""
@@ -158,7 +185,11 @@ def generate_study_plan(user_inputs):
     """
     try:
         response = model.generate_content(prompt) 
-        return response.text
+        audio_path = text_to_speech(response.text)
+        return {
+            "study_plan_text": response.text,
+            "audio_path": audio_path
+        }
     except Exception as e:
         return f"An error occurred: {e}"
 
@@ -176,6 +207,7 @@ def extract_table(study_plan_text):
         if row:
             table_data.append(row)
     return tabulate(table_data, headers=header, tablefmt="html")  
+
 def study_plan_view(request):
     if request.method == 'POST':
         user_inputs = {
@@ -186,7 +218,11 @@ def study_plan_view(request):
             'methods': request.POST.get('methods'),
             'notes': request.POST.get('notes'),
         }
-        study_plan_text = generate_study_plan(user_inputs)
+
+        result = generate_study_plan(user_inputs)
+        study_plan_text = result["study_plan_text"]
+        audio_path = result["audio_path"] 
+
         table = None
         try:
             table = extract_table(study_plan_text)
@@ -194,9 +230,13 @@ def study_plan_view(request):
             error_message = f"Could not generate table: {e}"
             return render(request, 'study_plan.html', {'study_plan_text': study_plan_text, 'error': error_message})
 
-        return render(request, 'study_plan.html', {'study_plan_text': markdown.markdown(study_plan_text), 'table':table})
+        return render(request, 'study_plan.html', {
+            'study_plan_text': markdown.markdown(study_plan_text), 
+            'table': table, 
+            'audio_path': audio_path 
+        })
 
-    return render(request, 'study_plan.html')  
+    return render(request, 'study_plan.html')
 
 import io
 import numpy as np
@@ -206,12 +246,11 @@ from google.oauth2 import service_account
 from django.conf import settings
 from django.shortcuts import render
 
-# Path to your credentials JSON file
 credentials_path = settings.BASE_DIR / "credentials.json"
-# Authenticate using the credentials file
+
 credentials = service_account.Credentials.from_service_account_file(credentials_path)
 
-# Initialize the Vision API client with the credentials
+
 client1 = vision.ImageAnnotatorClient(credentials=credentials)
 
 def annotate_image(image_path):
