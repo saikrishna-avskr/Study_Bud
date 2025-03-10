@@ -1,332 +1,389 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Study Plan Generator</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
     <style>
-        /* Resetting some default styles */
-        body, h1, h2, p, input, textarea, label {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      /* Resetting some default styles */
+      body,
+      h1,
+      h2,
+      p,
+      input,
+      textarea,
+      label {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        /* General body styling */
-        body {
-            font-family: 'Arial', sans-serif;
-            /* background: linear-gradient(145deg, #2E4A7F, #4B6CB7);
+      /* General body styling */
+      body {
+        font-family: "Arial", sans-serif;
+        /* background: linear-gradient(145deg, #2E4A7F, #4B6CB7);
              */
-            
-            background: linear-gradient(145deg, #ff6b6b, #f7b7a3, #4e73df); 
-            color: #fff;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
 
-        h1 {
-            font-size: 36px;
-            margin-bottom: 20px;
-            color: #fff;
-            text-align: center;
-            animation: fadeIn 1s ease-out;
-        }
+        background: linear-gradient(145deg, #ff6b6b, #f7b7a3, #4e73df);
+        color: #fff;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
 
-        /* Fade-in effect for header */
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(-30px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
+      h1 {
+        font-size: 36px;
+        margin-bottom: 20px;
+        color: #fff;
+        text-align: center;
+        animation: fadeIn 1s ease-out;
+      }
 
-        h2 {
-            font-size: 24px;
-            margin-top: 20px;
-            color: #fff;
-            text-align: center;
+      /* Fade-in effect for header */
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+          transform: translateY(-30px);
         }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-        /* Form styling */
+      h2 {
+        font-size: 24px;
+        margin-top: 20px;
+        color: #fff;
+        text-align: center;
+      }
+
+      /* Form styling */
+      form {
+        background-color: rgba(0, 0, 0, 0.6);
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        width: 100%;
+        max-width: 600px;
+        margin-bottom: 30px;
+        animation: slideIn 1s ease-out;
+      }
+
+      /* Slide-in effect for form */
+      @keyframes slideIn {
+        0% {
+          opacity: 0;
+          transform: translateX(-30px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      label {
+        font-size: 18px;
+        margin-bottom: 5px;
+        display: block;
+        color: #f9f9f9;
+      }
+
+      input[type="text"],
+      input[type="date"],
+      textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        border: 1px solid #e0e0e0;
+        background-color: #333;
+        color: #fff;
+        font-size: 16px;
+        transition: all 0.3s ease;
+      }
+
+      input[type="submit"] {
+        background: linear-gradient(145deg, #6a11cb, #2575fc);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 18px;
+        transition: all 0.3s ease;
+        opacity: 0;
+        animation: fadeInButton 1.5s forwards;
+      }
+
+      /* Fade-in animation for button */
+      @keyframes fadeInButton {
+        0% {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      input[type="submit"]:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      textarea {
+        resize: none;
+        height: 150px;
+      }
+
+      /* Table styling */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 30px;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        animation: fadeInTable 1s ease-out;
+        max-width: 100%;
+        word-wrap: break-word;
+        table-layout: fixed;
+      }
+
+      /* Fade-in effect for table */
+      @keyframes fadeInTable {
+        0% {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      th,
+      td {
+        padding: 15px;
+        text-align: center;
+        border: 1px solid #ccc;
+      }
+
+      th {
+        background-color: #4caf50;
+        color: white;
+        font-size: 18px;
+      }
+
+      td {
+        background-color: #f9f9f9;
+        color: #333;
+        font-size: 16px;
+      }
+
+      tr:nth-child(even) td {
+        background-color: #f1f1f1;
+      }
+
+      tr:hover {
+        background-color: #f0f0f0;
+      }
+
+      /* Error message styling */
+      p.error {
+        color: red;
+        font-size: 18px;
+        margin-top: 20px;
+        animation: shake 0.5s ease-out;
+      }
+
+      /* Shake animation for error message */
+      @keyframes shake {
+        0% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        50% {
+          transform: translateX(5px);
+        }
+        75% {
+          transform: translateX(-5px);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
         form {
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 600px;
-            margin-bottom: 30px;
-            animation: slideIn 1s ease-out;
-        }
-
-        /* Slide-in effect for form */
-        @keyframes slideIn {
-            0% { opacity: 0; transform: translateX(-30px); }
-            100% { opacity: 1; transform: translateX(0); }
-        }
-
-        label {
-            font-size: 18px;
-            margin-bottom: 5px;
-            display: block;
-            color: #f9f9f9;
-        }
-
-        input[type="text"], input[type="date"], textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-            border: 1px solid #e0e0e0;
-            background-color: #333;
-            color: #fff;
-            font-size: 16px;
-            transition: all 0.3s ease;
+          padding: 20px;
         }
 
         input[type="submit"] {
-            background: linear-gradient(145deg, #6a11cb, #2575fc);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 18px;
-            transition: all 0.3s ease;
-            opacity: 0;
-            animation: fadeInButton 1.5s forwards;
+          padding: 12px 24px;
         }
+      }
 
-        /* Fade-in animation for button */
-        @keyframes fadeInButton {
-            0% { opacity: 0; transform: translateY(30px); }
-            100% { opacity: 1; transform: translateY(0); }
+      /* Container for study plan text to prevent overflow */
+      pre {
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        max-width: 100%;
+        overflow-wrap: break-word;
+        padding: 10px;
+        background-color: rgba(0, 0, 0, 0.6);
+        border-radius: 5px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        color: #f9f9f9;
+        font-size: 16px;
+        max-width: 100%;
+        margin-top: 20px;
+      }
+
+      /* Loading spinner styling */
+      .loading-spinner {
+        display: none;
+        border: 5px solid #f3f3f3; /* Light grey */
+        border-top: 5px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 2s linear infinite;
+        margin-top: 20px;
+      }
+
+      /* Spin animation */
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
         }
-
-        input[type="submit"]:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        100% {
+          transform: rotate(360deg);
         }
+      }
 
-        textarea {
-            resize: none;
-            height: 150px;
-        }
+      .custom-navbar {
+        background: rgba(0, 0, 0, 0.2) !important; /* Semi-transparent black */
+        backdrop-filter: blur(10px); /* Optional: Glassmorphism effect */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Optional subtle border */
+      }
 
-        /* Table styling */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 30px;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            animation: fadeInTable 1s ease-out;
-            max-width: 100%;
-            word-wrap: break-word;
-            table-layout: fixed;
-        }
+      .navbar-nav .nav-link {
+        color: white !important; /* Ensure links remain visible */
+        font-weight: bold;
+        transition: color 0.3s ease-in-out;
+      }
 
-        /* Fade-in effect for table */
-        @keyframes fadeInTable {
-            0% { opacity: 0; transform: translateY(30px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        th, td {
-            padding: 15px;
-            text-align: center;
-            border: 1px solid #ccc;
-        }
-
-        th {
-            background-color: #4CAF50;
-            color: white;
-            font-size: 18px;
-        }
-
-        td {
-            background-color: #f9f9f9;
-            color: #333;
-            font-size: 16px;
-        }
-
-        tr:nth-child(even) td {
-            background-color: #f1f1f1;
-        }
-
-        tr:hover {
-            background-color: #f0f0f0;
-        }
-
-        /* Error message styling */
-        p.error {
-            color: red;
-            font-size: 18px;
-            margin-top: 20px;
-            animation: shake 0.5s ease-out;
-        }
-
-        /* Shake animation for error message */
-        @keyframes shake {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            50% { transform: translateX(5px); }
-            75% { transform: translateX(-5px); }
-            100% { transform: translateX(0); }
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            form {
-                padding: 20px;
-            }
-
-            input[type="submit"] {
-                padding: 12px 24px;
-            }
-        }
-
-        /* Container for study plan text to prevent overflow */
-        pre {
-            word-wrap: break-word;
-            white-space: pre-wrap;
-            max-width: 100%;
-            overflow-wrap: break-word;
-            padding: 10px;
-            background-color: rgba(0, 0, 0, 0.6);
-            border-radius: 5px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            color: #f9f9f9;
-            font-size: 16px;
-            max-width: 100%;
-            margin-top: 20px;
-        }
-
-        /* Loading spinner styling */
-        .loading-spinner {
-            display: none;
-            border: 5px solid #f3f3f3; /* Light grey */
-            border-top: 5px solid #3498db; /* Blue */
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 2s linear infinite;
-            margin-top: 20px;
-        }
-
-        /* Spin animation */
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .custom-navbar {
-    background: rgba(0, 0, 0, 0.2) !important; /* Semi-transparent black */
-    backdrop-filter: blur(10px); /* Optional: Glassmorphism effect */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Optional subtle border */
-}
-
-.navbar-nav .nav-link {
-    color: white !important; /* Ensure links remain visible */
-    font-weight: bold;
-    transition: color 0.3s ease-in-out;
-}
-
-.navbar-nav .nav-link:hover {
-    color: #ff6b6b !important; /* Highlight effect on hover */
-}
-
-
+      .navbar-nav .nav-link:hover {
+        color: #ff6b6b !important; /* Highlight effect on hover */
+      }
     </style>
-</head>
-<body>
-   <nav class="navbar navbar-expand-lg w-100 custom-navbar">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/">StudyBud</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="/study_plan/">Study Planner</a>
-        </li>        
-        <li class="nav-item">
-          <a class="nav-link" href="/generate_code">Code Generator</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/generate_image">Generate Image</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/evaluate_assignment/">Upload Assignment</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg w-100 custom-navbar">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">StudyBud</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="/study_plan/"
+                >Study Planner</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/generate_code">Code Generator</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/generate_image">Generate Image</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/evaluate_assignment/"
+                >Upload Assignment</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/annotate/">Discribe Image</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
 
-    <br/>
+    <br />
     <h1>Study Plan Generator</h1>
     <form method="post" id="study-plan-form">
-        {% csrf_token %}
-        <label for="subject">Subject:</label><br>
-        <input type="text" id="subject" name="subject" required><br>
+      {% csrf_token %}
+      <label for="subject">Subject:</label><br />
+      <input type="text" id="subject" name="subject" required /><br />
 
-        <label for="exam_date">Exam Date:</label><br>
-        <input type="date" id="exam_date" name="exam_date" required><br>
+      <label for="exam_date">Exam Date:</label><br />
+      <input type="date" id="exam_date" name="exam_date" required /><br />
 
-        <label for="study_time">Study Time per Day (hours):</label><br>
-        <input type="text" id="study_time" name="study_time" required><br>
+      <label for="study_time">Study Time per Day (hours):</label><br />
+      <input type="text" id="study_time" name="study_time" required /><br />
 
-        <label for="topics">Topics:</label><br>
-        <input type="text" id="topics" name="topics" required><br>
+      <label for="topics">Topics:</label><br />
+      <input type="text" id="topics" name="topics" required /><br />
 
-        <label for="methods">Study Methods:</label><br>
-        <input type="text" id="methods" name="methods"><br>
+      <label for="methods">Study Methods:</label><br />
+      <input type="text" id="methods" name="methods" /><br />
 
-        <label for="notes">Additional Notes:</label><br>
-        <textarea id="notes" name="notes"></textarea><br>
+      <label for="notes">Additional Notes:</label><br />
+      <textarea id="notes" name="notes"></textarea><br />
 
-        <input type="submit" value="Generate Plan">
+      <input type="submit" value="Generate Plan" />
     </form>
-
-    <!-- Loading Spinner -->
     <div id="loading-spinner" class="loading-spinner"></div>
 
     {% if study_plan_text %}
-        <h2>Study Plan:</h2>
-        <pre>{{ study_plan_text|safe }}</pre>
+    <h2>Study Plan:</h2>
+    <pre>{{ study_plan_text|safe }}</pre>
     {% endif %}
-<!-- 
-    {% if table %}
-        <h2>Daily Schedule:</h2>
-        <div>{{ table|safe }}</div>
-    {% endif %} -->
 
     {% if error %}
-        <p class="error">{{ error }}</p>
+    <p class="error">{{ error }}</p>
     {% endif %}
 
     <script>
-        // Add event listener for form submission
-        const form = document.getElementById("study-plan-form");
-        const spinner = document.getElementById("loading-spinner");
+      const form = document.getElementById("study-plan-form");
+      const spinner = document.getElementById("loading-spinner");
 
-        form.addEventListener("submit", function(event) {
-            // Show loading spinner and prevent form submission
-            spinner.style.display = "block";
-            event.preventDefault();
-
-            // Simulate form submission with a delay (e.g., using setTimeout for demonstration)
-            setTimeout(function() {
-                form.submit();
-            }, 2000); // Simulated delay for demonstration
-        });
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        setTimeout(function () {
+          form.submit();
+        }, 2000); 
+      });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-</body>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>

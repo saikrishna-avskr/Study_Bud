@@ -1,263 +1,313 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Upload Assignment</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
     <style>
-        /* General Reset */
-        body, h2, label, select, textarea, button {
-            margin: 0;
-            
-            padding: 0;
-            box-sizing: border-box;
-        }
+      /* General Reset */
+      body,
+      h2,
+      label,
+      select,
+      textarea,
+      button {
+        margin: 0;
 
-        /* General body styling */
-        body {
-            font-family: 'Arial', sans-serif;
-            /* background: linear-gradient(145deg, #6a11cb, #2575fc); */
-            background: linear-gradient(145deg, #ff6b6b, #f7b7a3, #4e73df);
-            color: #fff;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        /* Header Styling */
-        h2 {
-            font-size: 28px;
-            margin-bottom: 30px;
-            color: #fff;
-            text-align: center;
-            animation: fadeIn 1s ease-out;
-        }
+      /* General body styling */
+      body {
+        font-family: "Arial", sans-serif;
+        /* background: linear-gradient(145deg, #6a11cb, #2575fc); */
+        background: linear-gradient(145deg, #ff6b6b, #f7b7a3, #4e73df);
+        color: #fff;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
 
-        /* Fade in animation for header */
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(-30px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
+      /* Header Styling */
+      h2 {
+        font-size: 28px;
+        margin-bottom: 30px;
+        color: #fff;
+        text-align: center;
+        animation: fadeIn 1s ease-out;
+      }
 
-        /* Form container */
+      /* Fade in animation for header */
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Form container */
+      form {
+        background-color: rgba(0, 0, 0, 0.6);
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        max-width: 600px;
+        width: 100%;
+        text-align: left;
+        animation: slideIn 1s ease-out;
+      }
+
+      /* Slide-in effect for form */
+      @keyframes slideIn {
+        0% {
+          opacity: 0;
+          transform: translateX(-30px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      /* Label styling */
+      label {
+        font-size: 18px;
+        color: #f9f9f9;
+        margin-bottom: 10px;
+        display: block;
+      }
+
+      /* Input and Textarea styling */
+      select,
+      textarea,
+      input[type="file"] {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        background-color: #333;
+        color: #fff;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+      }
+
+      /* Focus styles */
+      select:focus,
+      textarea:focus {
+        border-color: #6a11cb;
+        outline: none;
+        box-shadow: 0 0 5px rgba(106, 17, 203, 0.7);
+      }
+
+      /* Textarea specific styles */
+      textarea {
+        resize: none;
+        height: 150px;
+      }
+
+      /* Submit button styling */
+      button {
+        background: linear-gradient(145deg, #ff6b6b, #f7b7a3);
+        color: white;
+        padding: 15px 30px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 18px;
+        transition: all 0.3s ease;
+        width: 100%;
+        font-weight: bold;
+        position: relative;
+      }
+
+      button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Loading animation for header */
+      .loading {
+        animation: pulse 1.5s infinite;
+      }
+
+      /* Pulse effect for loading elements */
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      /* Error message styling */
+      .error-message {
+        color: #ff6b6b;
+        font-size: 14px;
+        margin-top: -15px;
+        margin-bottom: 15px;
+      }
+
+      .custom-navbar {
+        background: rgba(0, 0, 0, 0.2) !important; /* Semi-transparent black */
+        backdrop-filter: blur(10px); /* Optional: Glassmorphism effect */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Optional subtle border */
+      }
+
+      .navbar-nav .nav-link {
+        color: white !important; /* Ensure links remain visible */
+        font-weight: bold;
+        transition: color 0.3s ease-in-out;
+      }
+
+      .navbar-nav .nav-link:hover {
+        color: #ff6b6b !important; /* Highlight effect on hover */
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
         form {
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            max-width: 600px;
-            width: 100%;
-            text-align: left;
-            animation: slideIn 1s ease-out;
+          padding: 20px;
+          width: 90%;
         }
 
-        /* Slide-in effect for form */
-        @keyframes slideIn {
-            0% { opacity: 0; transform: translateX(-30px); }
-            100% { opacity: 1; transform: translateX(0); }
-        }
-
-        /* Label styling */
-        label {
-            font-size: 18px;
-            color: #f9f9f9;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        /* Input and Textarea styling */
-        select, textarea, input[type="file"] {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            background-color: #333;
-            color: #fff;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-
-        /* Focus styles */
-        select:focus, textarea:focus {
-            border-color: #6a11cb;
-            outline: none;
-            box-shadow: 0 0 5px rgba(106, 17, 203, 0.7);
-        }
-
-        /* Textarea specific styles */
-        textarea {
-            resize: none;
-            height: 150px;
-        }
-
-        /* Submit button styling */
         button {
-            background: linear-gradient(145deg, #ff6b6b, #f7b7a3);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 18px;
-            transition: all 0.3s ease;
-            width: 100%;
-            font-weight: bold;
-            position: relative;
+          padding: 12px 24px;
         }
-
-        button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Loading animation for header */
-        .loading {
-            animation: pulse 1.5s infinite;
-        }
-
-        /* Pulse effect for loading elements */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        /* Error message styling */
-        .error-message {
-            color: #ff6b6b;
-            font-size: 14px;
-            margin-top: -15px;
-            margin-bottom: 15px;
-        }
-
-        .custom-navbar {
-    background: rgba(0, 0, 0, 0.2) !important; /* Semi-transparent black */
-    backdrop-filter: blur(10px); /* Optional: Glassmorphism effect */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Optional subtle border */
-}
-
-.navbar-nav .nav-link {
-    color: white !important; /* Ensure links remain visible */
-    font-weight: bold;
-    transition: color 0.3s ease-in-out;
-}
-
-.navbar-nav .nav-link:hover {
-    color: #ff6b6b !important; /* Highlight effect on hover */
-}
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            form {
-                padding: 20px;
-                width: 90%;
-            }
-
-            button {
-                padding: 12px 24px;
-            }
-        }
-
+      }
     </style>
-</head>
-<body>
-        <nav class="navbar navbar-expand-lg w-100 custom-navbar">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/">StudyBud</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="/study_plan/">Study Planner</a>
-        </li>        
-        <li class="nav-item">
-          <a class="nav-link" href="/generate_code">Code Generator</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/generate_image">Generate Image</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/evaluate_assignment/">Upload Assignment</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
-    <br/>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg w-100 custom-navbar">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">StudyBud</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="/study_plan/"
+                >Study Planner</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/generate_code">Code Generator</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/generate_image">Generate Image</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/evaluate_assignment/"
+                >Upload Assignment</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/annotate/">Discribe Image</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <br />
     <h1 class="loading">Upload Assignment</h1>
-    <form id="assignmentForm" action="/evaluate_assignment/" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-
-        <!-- Select Input Type -->
-        <label for="intype">Select Input Type:</label>
-        <select name="intype" id="intype" required>
-            <option value="pdf">PDF File</option>
-            <option value="text">Text Input</option>
-        </select>
-
-        <!-- PDF File Input -->
-        <div id="pdf_input">
-            <label for="pdf_file">Upload PDF:</label>
-            <input type="file" name="pdf_file" id="pdf_file" accept="application/pdf">
-            <div class="error-message" id="pdfError"></div>
-        </div>
-
-        <!-- Text Input Area -->
-        <div id="text_input" style="display: none;">
-            <label for="text_input_area">Enter Questions (one per line):</label>
-            <textarea name="text_input" id="text_input_area" rows="10" cols="50"></textarea>
-            <div class="error-message" id="textError"></div>
-        </div>
-
-        <!-- Submit Button -->
-        <button type="submit">Submit</button>
+    <form
+      id="assignmentForm"
+      action="/evaluate_assignment/"
+      method="post"
+      enctype="multipart/form-data"
+    >
+      {% csrf_token %}
+      <label for="intype">Select Input Type:</label>
+      <select name="intype" id="intype" required>
+        <option value="pdf">PDF File</option>
+        <option value="text">Text Input</option>
+      </select>
+      <div id="pdf_input">
+        <label for="pdf_file">Upload PDF:</label>
+        <input
+          type="file"
+          name="pdf_file"
+          id="pdf_file"
+          accept="application/pdf"
+        />
+        <div class="error-message" id="pdfError"></div>
+      </div>
+      <div id="text_input" style="display: none">
+        <label for="text_input_area">Enter Questions (one per line):</label>
+        <textarea
+          name="text_input"
+          id="text_input_area"
+          rows="10"
+          cols="50"
+        ></textarea>
+        <div class="error-message" id="textError"></div>
+      </div>
+      <button type="submit">Submit</button>
     </form>
-
     <script>
-        // Show or hide the inputs based on selected input type
-        document.getElementById('intype').addEventListener('change', function() {
-            document.getElementById('pdf_input').style.display = this.value === 'pdf' ? 'block' : 'none';
-            document.getElementById('text_input').style.display = this.value === 'text' ? 'block' : 'none';
-
-            // Clear error messages when changing the input type
-            document.getElementById('pdfError').textContent = '';
-            document.getElementById('textError').textContent = '';
-        });
-
-        // Initialize the form and trigger the event to set the correct input type
-        document.getElementById('intype').dispatchEvent(new Event('change'));
-
-        // Form validation before submission
-        document.getElementById('assignmentForm').addEventListener('submit', function(event) {
-            let isValid = true;
-            const intype = document.getElementById('intype').value;
-            const pdfFile = document.getElementById('pdf_file').files.length;
-            const textInput = document.getElementById('text_input_area').value.trim();
-
-            // Check if PDF input is selected and file is provided
-            if (intype === 'pdf' && pdfFile === 0) {
-                document.getElementById('pdfError').textContent = 'Please upload a PDF file.';
-                isValid = false;
-            }
-
-            // Check if text input is selected and text area is filled
-            if (intype === 'text' && textInput === '') {
-                document.getElementById('textError').textContent = 'Please enter some text.';
-                isValid = false;
-            }
-
-            // Prevent form submission if invalid
-            if (!isValid) {
-                event.preventDefault();
-            }
+      document.getElementById("intype").addEventListener("change", function () {
+        document.getElementById("pdf_input").style.display =
+          this.value === "pdf" ? "block" : "none";
+        document.getElementById("text_input").style.display =
+          this.value === "text" ? "block" : "none";
+        document.getElementById("pdfError").textContent = "";
+        document.getElementById("textError").textContent = "";
+      });
+      document.getElementById("intype").dispatchEvent(new Event("change"));
+      document
+        .getElementById("assignmentForm")
+        .addEventListener("submit", function (event) {
+          let isValid = true;
+          const intype = document.getElementById("intype").value;
+          const pdfFile = document.getElementById("pdf_file").files.length;
+          const textInput = document
+            .getElementById("text_input_area")
+            .value.trim();
+          if (intype === "pdf" && pdfFile === 0) {
+            document.getElementById("pdfError").textContent =
+              "Please upload a PDF file.";
+            isValid = false;
+          }
+          if (intype === "text" && textInput === "") {
+            document.getElementById("textError").textContent =
+              "Please enter some text.";
+            isValid = false;
+          }
+          if (!isValid) {
+            event.preventDefault();
+          }
         });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-</body>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>

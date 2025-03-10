@@ -1,247 +1,292 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Image Generation</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
     <style>
-        /* General body and layout styling */
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(145deg, #ff6b6b, #f7b7a3, #4e73df); /* Warm and cool gradient */
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            {% comment %} height: 100vh; {% endcomment %}
-            margin: 0;
-            overflow-y: scroll; /* Enable vertical scroll */
-            padding: 20px;
-        }
+      /* General body and layout styling */
+      body {
+        font-family: "Arial", sans-serif;
+        background: linear-gradient(
+          145deg,
+          #ff6b6b,
+          #f7b7a3,
+          #4e73df
+        ); /* Warm and cool gradient */
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        overflow-y: scroll; /* Enable vertical scroll */
+        padding: 20px;
+      }
 
-        /* Custom Scrollbar Styling */
-        body::-webkit-scrollbar {
-            width: 10px;
-        }
+      /* Custom Scrollbar Styling */
+      body::-webkit-scrollbar {
+        width: 10px;
+      }
 
-        body::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
+      body::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
 
-        body::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 10px;
-        }
+      body::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 10px;
+      }
 
-        body::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
+      body::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
 
-        /* Header Styling */
-        h1 {
-            font-size: 36px;
-            margin-bottom: 30px;
-            text-align: center;
-            color: #fff;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
+      /* Header Styling */
+      h1 {
+        font-size: 36px;
+        margin-bottom: 30px;
+        text-align: center;
+        color: #fff;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
 
-        /* Form container */
+      /* Form container */
+      form {
+        background-color: rgba(0, 0, 0, 0.7); /* Slightly darker background */
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        max-width: 500px;
+        width: 100%;
+        animation: slideIn 1s ease-out;
+        text-align: center;
+      }
+
+      /* Slide-in effect for form */
+      @keyframes slideIn {
+        0% {
+          opacity: 0;
+          transform: translateX(-30px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      /* Form label styling */
+      label {
+        font-size: 18px;
+        margin-bottom: 8px;
+        display: block;
+        color: #f4f4f4;
+        font-weight: 600;
+      }
+
+      /* Input field styling */
+      input[type="text"] {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        background-color: #333;
+        color: #fff;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+      }
+
+      input[type="text"]:focus {
+        background-color: #555;
+        outline: none;
+      }
+
+      /* Submit button styling */
+      button {
+        background: linear-gradient(
+          145deg,
+          #ff6b6b,
+          #f7b7a3
+        ); /* Gradient button */
+        color: white;
+        padding: 15px 30px;
+        border-radius: 10px;
+        border: none;
+        font-size: 18px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        font-weight: bold;
+        position: relative;
+      }
+
+      button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Loading spinner styling */
+      .loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+      }
+
+      .loading.show {
+        display: block;
+      }
+
+      .spinner {
+        border: 4px solid #f3f3f3; /* Light grey */
+        border-top: 4px solid #ff6b6b; /* Red color */
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 2s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Generated Image Styling */
+      img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        margin-top: 20px;
+        animation: fadeIn 1.5s ease-in-out;
+      }
+
+      /* Animation for fade-in */
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
         form {
-            background-color: rgba(0, 0, 0, 0.7); /* Slightly darker background */
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            max-width: 500px;
-            width: 100%;
-            animation: slideIn 1s ease-out;
-            text-align: center;
+          padding: 20px;
+          width: 90%;
         }
 
-        /* Slide-in effect for form */
-        @keyframes slideIn {
-            0% { opacity: 0; transform: translateX(-30px); }
-            100% { opacity: 1; transform: translateX(0); }
-        }
-
-        /* Form label styling */
-        label {
-            font-size: 18px;
-            margin-bottom: 8px;
-            display: block;
-            color: #f4f4f4;
-            font-weight: 600;
-        }
-
-        /* Input field styling */
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            background-color: #333;
-            color: #fff;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-
-        input[type="text"]:focus {
-            background-color: #555;
-            outline: none;
-        }
-
-        /* Submit button styling */
         button {
-            background: linear-gradient(145deg, #ff6b6b, #f7b7a3); /* Gradient button */
-            color: white;
-            padding: 15px 30px;
-            border-radius: 10px;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            font-weight: bold;
-            position: relative;
+          padding: 12px 24px;
         }
+      }
+      .custom-navbar {
+        background: rgba(0, 0, 0, 0.2) !important; /* Semi-transparent black */
+        backdrop-filter: blur(10px); /* Optional: Glassmorphism effect */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Optional subtle border */
+      }
 
-        button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
+      .navbar-nav .nav-link {
+        color: white !important; /* Ensure links remain visible */
+        font-weight: bold;
+        transition: color 0.3s ease-in-out;
+      }
 
-        /* Loading spinner styling */
-        .loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: none;
-        }
-
-        .loading.show {
-            display: block;
-        }
-
-        .spinner {
-            border: 4px solid #f3f3f3; /* Light grey */
-            border-top: 4px solid #ff6b6b; /* Red color */
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 2s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Generated Image Styling */
-        img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            margin-top: 20px;
-            animation: fadeIn 1.5s ease-in-out;
-        }
-
-        /* Animation for fade-in */
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(-20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            form {
-                padding: 20px;
-                width: 90%;
-            }
-
-            button {
-                padding: 12px 24px;
-            }
-        }
-        .custom-navbar {
-    background: rgba(0, 0, 0, 0.2) !important; /* Semi-transparent black */
-    backdrop-filter: blur(10px); /* Optional: Glassmorphism effect */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Optional subtle border */
-}
-
-.navbar-nav .nav-link {
-    color: white !important; /* Ensure links remain visible */
-    font-weight: bold;
-    transition: color 0.3s ease-in-out;
-}
-
-.navbar-nav .nav-link:hover {
-    color: #ff6b6b !important; /* Highlight effect on hover */
-}
+      .navbar-nav .nav-link:hover {
+        color: #ff6b6b !important; /* Highlight effect on hover */
+      }
     </style>
-</head>
-<body>
-     <nav class="navbar navbar-expand-lg w-100 custom-navbar">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/">StudyBud</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="/study_plan/">Study Planner</a>
-        </li>        
-        <li class="nav-item">
-          <a class="nav-link" href="/generate_code">Code Generator</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/generate_image">Generate Image</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/evaluate_assignment/">Upload Assignment</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
-    <br/>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg w-100 custom-navbar">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">StudyBud</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="/study_plan/"
+                >Study Planner</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/generate_code">Code Generator</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/generate_image">Generate Image</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/evaluate_assignment/"
+                >Upload Assignment</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/annotate/">Discribe Image</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <br />
     <h1>Generate Image</h1>
     <form method="POST" action="{% url 'generate_image' %}" id="imageForm">
-        {% csrf_token %}
-        <label for="prompt">Enter your prompt:</label>
-        <input type="text" id="prompt" name="prompt" required>
-        <button type="submit">
-            Generate Image
-            <div class="loading" id="loadingSpinner">
-                <div class="spinner"></div>
-            </div>
-        </button>
+      {% csrf_token %}
+      <label for="prompt">Enter your prompt:</label>
+      <input type="text" id="prompt" name="prompt" required />
+      <button type="submit">
+        Generate Image
+        <div class="loading" id="loadingSpinner">
+          <div class="spinner"></div>
+        </div>
+      </button>
     </form>
     {% if image_base64 %}
-        <h2>Generated Image:</h2>
-        <img src="data:image/png;base64,{{ image_base64 }}" alt="Generated Image">
+    <h2>Generated Image:</h2>
+    <img src="data:image/png;base64,{{ image_base64 }}" alt="Generated Image" />
     {% endif %}
 
     <script>
-        // Handle loading spinner during form submission
-        const form = document.getElementById('imageForm');
-        const loadingSpinner = document.getElementById('loadingSpinner');
+      const form = document.getElementById("imageForm");
+      const loadingSpinner = document.getElementById("loadingSpinner");
 
-        form.addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent form from submitting immediately
-            loadingSpinner.classList.add('show'); // Show loading spinner
-
-            // Simulate form submission and response (replace this with your actual submission logic)
-            setTimeout(function() {
-                form.submit(); // Submit form after the "loading" phase
-            }, 2000); // Simulate a delay for loading (2 seconds)
-        });
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        loadingSpinner.classList.add("show");
+        setTimeout(function () {
+          form.submit();
+        }, 2000);
+      });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-</body>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>
