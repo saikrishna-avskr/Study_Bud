@@ -245,6 +245,7 @@ def annotate_image_view(request):
         base64_image = draw_bounding_boxes(image_path, objects)
         prompt = f"""
         Use the following {labels} and give me a description about the entity present.
+        Generate a list of 10 questions based on the same along with answers.
         """
         
         response = model.generate_content(prompt) 
@@ -258,3 +259,5 @@ def annotate_image_view(request):
         })
 
     return render(request, 'upload_image.html')
+def pomodoro(request):
+    return render(request, 'pomodoro.html')

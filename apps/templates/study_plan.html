@@ -327,7 +327,10 @@
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/annotate/">Discribe Image</a>
+              <a class="nav-link" href="/annotate/">Describe Image</a>
+            </li>
+            <li class="nav-item">
+              <a href="/pomodoro" class="nav-link">Pomodoro Timer</a>
             </li>
           </ul>
         </div>
@@ -363,9 +366,7 @@
     {% if study_plan_text %}
     <h2>Study Plan:</h2>
     <pre>{{ study_plan_text|safe }}</pre>
-    {% endif %}
-
-    {% if error %}
+    {% endif %} {% if error %}
     <p class="error">{{ error }}</p>
     {% endif %}
 
@@ -377,7 +378,7 @@
         event.preventDefault();
         setTimeout(function () {
           form.submit();
-        }, 2000); 
+        }, 2000);
       });
     </script>
     <script

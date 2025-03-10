@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pomodoro Timer</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: linear-gradient(145deg, #ff6b6b, #f7b7a3, #4e73df);
+        margin: 0;
+      }
+      .container {
+        text-align: center;
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        font-size: 24px;
+        color: white;
+      }
+      .timer {
+        font-size: 50px;
+        margin: 20px 0;
+        color:white;
+      }
+      .buttons {
+        margin-top: 20px;
+      }
+      button {
+        background-color: #4caf50;
+        color: white;
+        font-size: 18px;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 10px;
+        transition: background-color 0.3s;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      .paused {
+        background-color: #f44336;
+      }
+      .paused:hover {
+        background-color: #e53935;
+      }
+      .input-container {
+        margin-bottom: 20px;
+      }
+      .input-container input {
+        font-size: 18px;
+        padding: 10px;
+        margin: 5px;
+        width: 60px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    
+    <div class="container">
+      <h1>Pomodoro Timer</h1>
+      <div class="input-container">
+        <input type="number" id="inputMinutes" placeholder="Minutes" min="1" />
+        <input
+          type="number"
+          id="inputSeconds"
+          placeholder="Seconds"
+          min="0"
+          max="59"
+        />
+        <button onclick="setTimer()">Set Time</button>
+      </div>
+      <div id="timer" class="timer">00:00</div>
+      <div class="buttons">
+        <button id="startBtn" onclick="startTimer()">Start</button>
+        <button id="pauseBtn" class="paused" onclick="pauseTimer()">
+          Pause
+        </button>
+        <button onclick="resetTimer()">Reset</button>
+      </div>
+    </div>
+
+    <script>
+      let timer;
+      let minutes = 0;
+      let seconds = 0;
+      let isRunning = false;
+
+      function formatTime(minutes, seconds) {
+        return `${minutes < 10 ? "0" : ""}${minutes}:${
+          seconds < 10 ? "0" : ""
+        }${seconds}`;
+      }
+
+      function setTimer() {
+        let inputMinutes = parseInt(
+          document.getElementById("inputMinutes").value
+        );
+        let inputSeconds = parseInt(
+          document.getElementById("inputSeconds").value
+        );
+
+        // Check if inputs are valid
+        if (
+          isNaN(inputMinutes) ||
+          isNaN(inputSeconds) ||
+          inputMinutes < 0 ||
+          inputSeconds < 0 ||
+          inputSeconds > 59
+        ) {
+          alert("Please enter valid time.");
+          return;
+        }
+
+        minutes = inputMinutes;
+        seconds = inputSeconds;
+        document.getElementById("timer").textContent = formatTime(
+          minutes,
+          seconds
+        );
+      }
+
+      function startTimer() {
+        if (isRunning) return;
+        isRunning = true;
+        document.getElementById("startBtn").disabled = true;
+        timer = setInterval(() => {
+          if (seconds === 0) {
+            if (minutes === 0) {
+              clearInterval(timer);
+              alert("Pomodoro is over! Take a break.");
+              resetTimer();
+              return;
+            }
+            minutes--;
+            seconds = 59;
+          } else {
+            seconds--;
+          }
+          document.getElementById("timer").textContent = formatTime(
+            minutes,
+            seconds
+          );
+        }, 1000);
+      }
+
+      function pauseTimer() {
+        if (!isRunning) return;
+        isRunning = false;
+        clearInterval(timer);
+        document.getElementById("startBtn").disabled = false;
+      }
+
+      function resetTimer() {
+        clearInterval(timer);
+        isRunning = false;
+        minutes = 0;
+        seconds = 0;
+        document.getElementById("timer").textContent = formatTime(
+          minutes,
+          seconds
+        );
+        document.getElementById("startBtn").disabled = false;
+      }
+    </script>
+  </body>
+</html>
