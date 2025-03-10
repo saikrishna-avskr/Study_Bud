@@ -17,8 +17,7 @@ from dotenv import load_dotenv
 import google.generativeai as genai2
 from tabulate import tabulate
 from datetime import datetime
-import numpy as np  
-import cv2
+
 
 load_dotenv()
 genai2.configure(api_key=os.getenv("GEMINI_API_KEY"))
@@ -134,7 +133,9 @@ def evaluate_assignment(request):
     return render(request, "upload_assignment.html")
 
 
-
+from datetime import datetime
+import markdown
+from tabulate import tabulate  
 
 def get_current_date():
     return datetime.now().date()
@@ -197,12 +198,24 @@ def study_plan_view(request):
 
     return render(request, 'study_plan.html')  
 
+import io
+import numpy as np
+import cv2
+from google.cloud import vision
+from google.oauth2 import service_account
+from django.conf import settings
+from django.shortcuts import render
 
-credentials_path = BASE_DIR / "credentials.json"
+# Path to your credentials JSON file
+credentials_path = settings.BASE_DIR / "credentials.json"
+# Authenticate using the credentials file
 credentials = service_account.Credentials.from_service_account_file(credentials_path)
+
+# Initialize the Vision API client with the credentials
 client1 = vision.ImageAnnotatorClient(credentials=credentials)
 
 def annotate_image(image_path):
+    """Annotates an image using Google Cloud Vision API."""
     with io.open(image_path, 'rb') as image_file:
         content = image_file.read()
 
@@ -217,6 +230,7 @@ def annotate_image(image_path):
     return labels, objects
 
 def draw_bounding_boxes(image_path, objects):
+    """Draws bounding boxes on the image and returns the annotated image path."""
     image = cv2.imread(image_path)
 
     for obj in objects:
@@ -227,20 +241,21 @@ def draw_bounding_boxes(image_path, objects):
         label = f"{object_name} ({score*100:.2f}%)"
         top_left = (vertices[0][0], vertices[0][1] - 10)
         cv2.putText(image, label, top_left, cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-    _, buffer = cv2.imencode('.png', image)
-    image_bytes = buffer.tobytes()
-    encoded_image = base64.b64encode(image_bytes).decode("utf-8")
-    
-    return encoded_image
 
+    output_image_path = BASE_DIR / "annotated_image.jpg"
+    cv2.imwrite(output_image_path, image)
+    return output_image_path
 
 def annotate_image_view(request):
+    """Django view to handle image annotation."""
     if request.method == 'POST' and request.FILES.get('image'):
         image_file = request.FILES['image']
-        image_path = BASE_DIR / "temp_image.jpg"
+        image_path = settings.BASE_DIR / "temp_image.jpg"
+
         with open(image_path, 'wb+') as destination:
             for chunk in image_file.chunks():
                 destination.write(chunk)
+
         labels, objects = annotate_image(image_path)
         base64_image = draw_bounding_boxes(image_path, objects)
         prompt = f"""
@@ -253,9 +268,7 @@ def annotate_image_view(request):
         return render(request, 'annotated_image.html', {
             'labels': labels,
             'objects': objects,
-            'base64_image': base64_image,
-            'prompttext': markdown.markdown(response.text)
-            
+            'output_image': output_image_path,
         })
 
     return render(request, 'upload_image.html')
