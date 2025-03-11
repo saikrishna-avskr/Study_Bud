@@ -26,12 +26,14 @@ googleapis-common-protos==1.69.1
 grpc-google-iam-v1==0.14.1
 grpcio==1.71.0rc2
 grpcio-status==1.71.0rc2
+gunicorn==23.0.0
 h11==0.14.0
 httpcore==1.0.7
 httplib2==0.22.0
 httpx==0.28.1
 idna==3.10
 Markdown==3.7
+mysqlclient==2.2.7
 numpy==2.2.3
 opencv-python==4.11.0.86
 packaging==24.2
@@ -59,3 +61,4 @@ typing_extensions==4.12.2
 uritemplate==4.1.1
 urllib3==2.3.0
 websockets==14.2
+whitenoise==6.9.0

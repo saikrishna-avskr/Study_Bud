@@ -21,7 +21,6 @@
 
       h1 {
         text-align: center;
-        color: white;
         margin-bottom: 30px;
       }
 
@@ -172,7 +171,7 @@
     </nav>
     <br />
 
-    <h1>Code Generator</h1>
+    <h1 style="color: white;">Code Generator</h1>
 
     <form method="post" action="{% url 'generate_code' %}">
       {% csrf_token %}
