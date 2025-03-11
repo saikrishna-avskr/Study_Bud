@@ -90,7 +90,6 @@ credentials_info = {
     "client_x509_cert_url": os.getenv("CLIENT_X509_CERT_URL"),
     "universe_domain": os.getenv("UNIVERSE_DOMAIN")
 }
-print(credentials_info)
 
 ### Uncomment the following code if you are deploying on locally
 # credentials_path = os.path.join(tempfile.gettempdir(), "credentials.json")
