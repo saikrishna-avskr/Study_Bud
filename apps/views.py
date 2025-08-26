@@ -21,7 +21,6 @@ import numpy as np
 import cv2
 import tempfile
 import json
-import html2text
 
 load_dotenv()
 genai2.configure(api_key=os.getenv("GEMINI_API_KEY"))
