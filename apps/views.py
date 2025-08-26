@@ -40,10 +40,42 @@ def generate_code(request):
         explanguage = request.POST.get("explanguage")   
         if explanguage is None:
             explanguage='english'
+        
+        # Enhanced prompt for better formatting
+        prompt = f"""
+        {problem_statement}
+        
+        Please provide:
+        1. A complete, working program in {language}
+        2. A detailed explanation of the code in {explanguage}
+        
+        Format your response as follows:
+        - Start with a brief description
+        - Put the code in a proper code block with syntax highlighting for {language} using this format:
+          ```{language.lower()}
+          // your code here
+          ```
+        - Follow with a detailed explanation using proper markdown formatting with headers, lists, and inline code where appropriate
+        """
+        
         response = client.models.generate_content(
-            model='gemini-2.0-flash', contents=problem_statement+". Generate program in "+language+". Explain the code in "+explanguage+".",
+            model='gemini-2.0-flash', contents=prompt
         )
-        return render(request, "code_generator.html", {"response": markdown.markdown(response.text)})
+        
+        # Configure markdown with syntax highlighting support
+        markdown_extensions = ['codehilite', 'fenced_code', 'tables', 'toc']
+        formatted_response = markdown.markdown(
+            response.text, 
+            extensions=markdown_extensions,
+            extension_configs={
+                'codehilite': {
+                    'css_class': 'highlight',
+                    'use_pygments': True
+                }
+            }
+        )
+        
+        return render(request, "code_generator.html", {"response": formatted_response})
     else:
         return render(request,'code_generator.html')
 

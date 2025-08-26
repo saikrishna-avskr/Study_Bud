@@ -86,14 +86,213 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
       }
 
-      pre {
-        background-color: #f4f4f4;
-        padding: 15px;
-        border-radius: 5px;
-        overflow-x: auto;
-        white-space: pre-wrap;
-        word-wrap: break-word;
+      /* Enhanced styling for code blocks and content */
+      .response-container {
+        background-color: rgba(255, 255, 255, 0.95);
+        padding: 30px;
+        border-radius: 12px;
         margin-top: 30px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .response-container h1,
+      .response-container h2,
+      .response-container h3 {
+        color: #2c3e50;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+        margin-top: 30px;
+        margin-bottom: 20px;
+      }
+
+      .response-container p {
+        line-height: 1.6;
+        margin-bottom: 15px;
+        color: #34495e;
+      }
+
+      /* Modern GitHub/ChatGPT style code blocks */
+      .response-container pre {
+        position: relative;
+        background-color: #0d1117;
+        color: #e6edf3;
+        padding: 16px;
+        border-radius: 6px;
+        overflow-x: auto;
+        margin: 16px 0;
+        border: 1px solid #30363d;
+        font-family: "SFMono-Regular", "Consolas", "Liberation Mono", "Menlo",
+          "Monaco", "Courier New", monospace;
+        font-size: 14px;
+        line-height: 1.45;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+      }
+
+      .response-container pre::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 40px;
+        background: linear-gradient(to bottom, #21262d, #0d1117);
+        border-radius: 6px 6px 0 0;
+        border-bottom: 1px solid #30363d;
+      }
+
+      .response-container pre code {
+        background: none !important;
+        color: inherit !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+        font-family: inherit;
+        font-size: inherit;
+        position: relative;
+        z-index: 2;
+        display: block;
+        margin-top: 40px;
+      }
+
+      /* Copy button styling */
+      .response-container pre::after {
+        content: "Copy";
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: #238636;
+        color: white;
+        border: none;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        cursor: pointer;
+        z-index: 3;
+        transition: background-color 0.2s;
+      }
+
+      .response-container pre:hover::after {
+        background: #2ea043;
+      }
+
+      /* Language label */
+      .response-container pre[class*="language-"]::before {
+        content: attr(data-lang);
+        position: absolute;
+        top: 8px;
+        left: 12px;
+        color: #7d8590;
+        font-size: 12px;
+        font-weight: 600;
+        z-index: 3;
+        text-transform: uppercase;
+      }
+
+      /* Inline code styling */
+      .response-container code:not(pre code) {
+        background-color: rgba(175, 184, 193, 0.2);
+        color: #d73a49;
+        padding: 0.2em 0.4em;
+        border-radius: 3px;
+        font-family: "SFMono-Regular", "Consolas", "Liberation Mono", "Menlo",
+          "Monaco", "Courier New", monospace;
+        font-size: 85%;
+      }
+
+      /* Syntax highlighting for GitHub dark theme */
+      .highlight .k,
+      .highlight .kd,
+      .highlight .kn,
+      .highlight .kp,
+      .highlight .kr,
+      .highlight .kt {
+        color: #ff7b72;
+      } /* Keywords */
+      .highlight .s,
+      .highlight .s1,
+      .highlight .s2,
+      .highlight .se,
+      .highlight .sh,
+      .highlight .si,
+      .highlight .sx {
+        color: #a5d6ff;
+      } /* Strings */
+      .highlight .c,
+      .highlight .c1,
+      .highlight .cm,
+      .highlight .cp,
+      .highlight .cs {
+        color: #8b949e;
+        font-style: italic;
+      } /* Comments */
+      .highlight .nb,
+      .highlight .bp {
+        color: #ffa657;
+      } /* Built-ins */
+      .highlight .nf,
+      .highlight .fm {
+        color: #d2a8ff;
+      } /* Function names */
+      .highlight .nc {
+        color: #ffa657;
+      } /* Class names */
+      .highlight .nn {
+        color: #ffa657;
+      } /* Namespaces */
+      .highlight .nv,
+      .highlight .vc,
+      .highlight .vg,
+      .highlight .vi {
+        color: #79c0ff;
+      } /* Variables */
+      .highlight .o,
+      .highlight .ow {
+        color: #ff7b72;
+      } /* Operators */
+      .highlight .m,
+      .highlight .mi,
+      .highlight .mf,
+      .highlight .mh,
+      .highlight .mo {
+        color: #79c0ff;
+      } /* Numbers */
+
+      /* List styling */
+      .response-container ul,
+      .response-container ol {
+        margin: 15px 0;
+        padding-left: 30px;
+      }
+
+      .response-container li {
+        margin-bottom: 8px;
+        line-height: 1.5;
+      }
+
+      /* Table styling */
+      .response-container table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+
+      .response-container th,
+      .response-container td {
+        border: 1px solid #bdc3c7;
+        padding: 12px;
+        text-align: left;
+      }
+
+      .response-container th {
+        background-color: #3498db;
+        color: white;
+        font-weight: bold;
+      }
+
+      .response-container tr:nth-child(even) {
+        background-color: #ecf0f1;
       }
 
       @media (max-width: 768px) {
@@ -103,6 +302,16 @@
 
         input[type="submit"] {
           padding: 10px 15px;
+        }
+
+        .response-container {
+          padding: 20px;
+          margin: 20px 10px;
+        }
+
+        .response-container pre {
+          font-size: 12px;
+          padding: 15px;
         }
       }
       p {
@@ -171,7 +380,7 @@
     </nav>
     <br />
 
-    <h1 style="color: white;">Code Generator</h1>
+    <h1 style="color: white">Code Generator</h1>
 
     <form method="post" action="{% url 'generate_code' %}">
       {% csrf_token %}
@@ -196,13 +405,91 @@
     </form>
 
     {% if response %}
-    <h2>Generated Code:</h2>
-    <pre>{{ response|safe }}</pre>
+    <div class="response-container">
+      <h2 style="color: #2c3e50; border-bottom: 2px solid #3498db">
+        Generated Code and Explanation
+      </h2>
+      <div class="content">{{ response|safe }}</div>
+    </div>
     {% endif %}
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+
+    <script>
+      // Add copy functionality to code blocks
+      document.addEventListener("DOMContentLoaded", function () {
+        const preElements = document.querySelectorAll(
+          ".response-container pre"
+        );
+
+        preElements.forEach(function (pre, index) {
+          // Create copy button
+          const copyBtn = document.createElement("button");
+          copyBtn.className = "copy-btn";
+          copyBtn.innerHTML = "Copy";
+          copyBtn.style.cssText = `
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #238636;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            z-index: 3;
+            transition: background-color 0.2s;
+          `;
+
+          // Add hover effect
+          copyBtn.addEventListener("mouseenter", function () {
+            this.style.background = "#2ea043";
+          });
+
+          copyBtn.addEventListener("mouseleave", function () {
+            this.style.background = "#238636";
+          });
+
+          // Add click event
+          copyBtn.addEventListener("click", function () {
+            const code = pre.querySelector("code");
+            const text = code ? code.innerText : pre.innerText;
+
+            navigator.clipboard
+              .writeText(text)
+              .then(function () {
+                copyBtn.innerHTML = "Copied!";
+                copyBtn.style.background = "#2ea043";
+
+                setTimeout(function () {
+                  copyBtn.innerHTML = "Copy";
+                  copyBtn.style.background = "#238636";
+                }, 2000);
+              })
+              .catch(function () {
+                // Fallback for older browsers
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textArea);
+
+                copyBtn.innerHTML = "Copied!";
+                setTimeout(function () {
+                  copyBtn.innerHTML = "Copy";
+                }, 2000);
+              });
+          });
+
+          pre.style.position = "relative";
+          pre.appendChild(copyBtn);
+        });
+      });
+    </script>
   </body>
 </html>

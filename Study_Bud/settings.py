@@ -8,9 +8,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1','studybud-3joo.onrender.com']
+ALLOWED_HOSTS = ['localhost','127.0.0.1','studybud-3joo.onrender.com', 'studybud.avsaikrishna.com']
 
 INSTALLED_APPS = [
     'apps',
