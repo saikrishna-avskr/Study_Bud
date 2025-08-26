@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 import os
 from google.cloud import vision
 import markdown
@@ -20,6 +21,7 @@ import numpy as np
 import cv2
 import tempfile
 import json
+import html2text
 
 load_dotenv()
 genai2.configure(api_key=os.getenv("GEMINI_API_KEY"))
@@ -159,29 +161,86 @@ def evaluate_assignment(request):
             
             questions = [q.strip() for q in questions if q.strip()]
             request.session["questions"] = questions
+            request.session["evaluations"] = []  # Initialize evaluations storage
         else:
             questions = request.session.get("questions", [])
+        
         total_questions = len(questions)
         current_question_index = int(request.POST.get("current_question_index", 0))
+        
+        # Store current answer and evaluation before navigation
+        user_answer = request.POST.get("user_answer", "")
+        evaluation_response = "Evaluation not available"
+        
+        if user_answer and questions and current_question_index < len(questions):
+            current_question = questions[current_question_index]
+            if user_answer.strip():  # Only evaluate non-empty answers
+                response = client.models.generate_content(
+                    model='gemini-2.0-flash', 
+                    contents=f"Evaluate the following answer: {user_answer} for the question: {current_question}. Grade the answer. Explain the answer if it is wrong. Give ways to improve the answer if needed.",
+                )
+                evaluation_response = response.text
+                
+                # Store the evaluation data
+                evaluations = request.session.get("evaluations", [])
+                
+                # Update or append evaluation for current question
+                evaluation_data = {
+                    "question_index": current_question_index,
+                    "question": current_question,
+                    "answer": user_answer,
+                    "evaluation": evaluation_response,
+                    "timestamp": datetime.now().isoformat()
+                }
+                
+                # Check if evaluation for this question already exists
+                existing_index = None
+                for i, eval_item in enumerate(evaluations):
+                    if eval_item["question_index"] == current_question_index:
+                        existing_index = i
+                        break
+                
+                if existing_index is not None:
+                    evaluations[existing_index] = evaluation_data
+                else:
+                    evaluations.append(evaluation_data)
+                
+                request.session["evaluations"] = evaluations
+        
+        # Handle navigation
         if "next" in request.POST and current_question_index < total_questions - 1:
             current_question_index += 1
         elif "prev" in request.POST and current_question_index > 0:
             current_question_index -= 1
+        
+        # Get current question for display
         current_question = questions[current_question_index] if questions else ""
-        user_answer = request.POST.get("user_answer", "")
-        evaluation_response = "Evaluation not available"
-        if user_answer and current_question:
-            response = client.models.generate_content(
-                model='gemini-2.0-flash', 
-                contents=f"Evaluate the following answer: {user_answer} for the question: {current_question}.Grade the answer. Explain the answer if it is wrong. Give ways to improve the answer if needed.",
-            )
-            evaluation_response = response.text
+        
+        # Get stored answer for current question
+        evaluations = request.session.get("evaluations", [])
+        stored_answer = ""
+        stored_evaluation = "Evaluation not available"
+        
+        for eval_item in evaluations:
+            if eval_item["question_index"] == current_question_index:
+                stored_answer = eval_item["answer"]
+                stored_evaluation = eval_item["evaluation"]
+                break
+        
+        # Check if test is complete (all questions have been answered)
+        answered_questions = len([e for e in evaluations if e["answer"].strip()])
+        is_complete = answered_questions == total_questions
+        
         context = {
             "current_question": current_question,
             "current_question_index": current_question_index,
             "total_questions": total_questions,
-            "evaluation_response": markdown.markdown(evaluation_response),
-            "user_answer": user_answer,        }
+            "evaluation_response": markdown.markdown(stored_evaluation),
+            "user_answer": stored_answer,
+            "intype": intype,
+            "is_complete": is_complete,
+            "answered_questions": answered_questions,
+        }
         
         return render(request, "evaluate_assignment.html", context)    
     return render(request, "upload_assignment.html")
@@ -201,9 +260,28 @@ def generate_study_plan(user_inputs):
     Preferred Study Methods: {user_inputs['methods']}
     Any Other Important Notes: {user_inputs['notes']}
 
-    Please provide the study plan in two parts:
-    1. A detailed study plan with a day-by-day breakdown.
-    2. A table summarizing the daily study schedule.
+    Please format your response using proper markdown with:
+    - Clear headings (use ##, ###, ####)
+    - Organized sections with day-by-day breakdown
+    - Bullet points and numbered lists where appropriate
+    - Bold text for important concepts
+    - Italic text for emphasis
+    - A well-structured table for the daily schedule at the end
+    
+    Structure the response as:
+    1. ## Introduction and Overview
+    2. ## Detailed Day-by-Day Study Plan
+    3. ## Important Tips and Considerations
+    4. ## Daily Schedule Table
+    
+    For the Daily Schedule Table, use this exact format:
+    
+    | Time Slot | Day 1 | Day 2 | Day 3 | Day 4 |
+    |-----------|-------|-------|-------|-------|
+    | 8:00 AM - 10:00 AM | Topic 1 | Topic 2 | Topic 3 | Topic 4 |
+    | 10:00 AM - 12:00 PM | Topic 1 | Topic 2 | Topic 3 | Topic 4 |
+    
+    Make sure the table is properly formatted with clear column separators (|) and includes all study sessions.
     """
     try:
         response = model.generate_content(prompt) 
@@ -212,19 +290,72 @@ def generate_study_plan(user_inputs):
         return f"An error occurred: {e}"
 
 def extract_table(study_plan_text):
-    table_start = study_plan_text.find("Day")
+    # Look for various table patterns
+    table_patterns = [
+        "Time Slot",
+        "Day\t",
+        "| Day |",
+        "Day\tMonday",
+        "## 4. Daily Schedule Table"
+    ]
+    
+    table_start = -1
+    for pattern in table_patterns:
+        table_start = study_plan_text.find(pattern)
+        if table_start != -1:
+            break
+    
     if table_start == -1:
-        return "Table not found."
+        return None
 
-    table_string = study_plan_text[table_start:] 
-    lines = table_string.strip().split('\n')
+    # Extract table section
+    table_section = study_plan_text[table_start:]
+    
+    # Find the end of table (next major section or end of text)
+    table_end = len(table_section)
+    for end_marker in ["\n## ", "\n# ", "\n---", "\nConclusion"]:
+        end_pos = table_section.find(end_marker, 100)  # Look after first 100 chars
+        if end_pos != -1:
+            table_end = min(table_end, end_pos)
+    
+    table_text = table_section[:table_end].strip()
+    lines = table_text.split('\n')
+    
+    # Filter out empty lines and non-table content
+    table_lines = []
+    for line in lines:
+        line = line.strip()
+        if line and ('|' in line or 'Time Slot' in line or any(day in line for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday'])):
+            table_lines.append(line)
+    
+    if len(table_lines) < 2:
+        return None
+    
+    # Process table data
     table_data = []
-    header = [cell.strip() for cell in lines[0].split('|') if cell.strip()]
-    for line in lines[1:]:
-        row = [cell.strip() for cell in line.split('|') if cell.strip()]
-        if row:
-            table_data.append(row)
-    return tabulate(table_data, headers=header, tablefmt="html")  
+    header = None
+    
+    for line in table_lines:
+        if '|' in line:
+            cells = [cell.strip() for cell in line.split('|') if cell.strip()]
+            if cells:
+                if header is None:
+                    header = cells
+                else:
+                    table_data.append(cells)
+        elif 'Time Slot' in line and header is None:
+            # Handle tab-separated or space-separated header
+            header = ['Time Slot', 'Monday (2025-08-26)', 'Tuesday (2025-08-27)', 'Wednesday (2025-08-28)', 'Thursday (2025-08-29)']
+        elif any(time in line for time in ['8:00 AM', '9:30 AM', '11:00 AM', '1:00 PM', '2:30 PM', '4:00 PM']):
+            # Handle tab or space separated data rows
+            cells = line.split('\t') if '\t' in line else line.split()
+            if len(cells) >= 2:
+                table_data.append(cells)
+    
+    if header and table_data:
+        return tabulate(table_data, headers=header, tablefmt="html", maxcolwidths=[15, 20, 20, 20, 20])
+    else:
+        return None  
 def study_plan_view(request):
     if request.method == 'POST':
         user_inputs = {
@@ -243,7 +374,17 @@ def study_plan_view(request):
             error_message = f"Could not generate table: {e}"
             return render(request, 'study_plan.html', {'study_plan_text': study_plan_text, 'error': error_message})
 
-        return render(request, 'study_plan.html', {'study_plan_text': markdown.markdown(study_plan_text), 'table':table})
+        # Enhanced markdown rendering with extensions
+        markdown_extensions = ['tables', 'toc', 'fenced_code']
+        formatted_study_plan = markdown.markdown(
+            study_plan_text, 
+            extensions=markdown_extensions
+        )
+
+        return render(request, 'study_plan.html', {
+            'study_plan_text': formatted_study_plan, 
+            'table': table
+        })
 
     return render(request, 'study_plan.html')  
 
