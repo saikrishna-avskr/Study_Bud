@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 import os
 from google.cloud import vision
 import markdown
@@ -160,86 +159,29 @@ def evaluate_assignment(request):
             
             questions = [q.strip() for q in questions if q.strip()]
             request.session["questions"] = questions
-            request.session["evaluations"] = []  # Initialize evaluations storage
         else:
             questions = request.session.get("questions", [])
-        
         total_questions = len(questions)
         current_question_index = int(request.POST.get("current_question_index", 0))
-        
-        # Store current answer and evaluation before navigation
-        user_answer = request.POST.get("user_answer", "")
-        evaluation_response = "Evaluation not available"
-        
-        if user_answer and questions and current_question_index < len(questions):
-            current_question = questions[current_question_index]
-            if user_answer.strip():  # Only evaluate non-empty answers
-                response = client.models.generate_content(
-                    model='gemini-2.0-flash', 
-                    contents=f"Evaluate the following answer: {user_answer} for the question: {current_question}. Grade the answer. Explain the answer if it is wrong. Give ways to improve the answer if needed.",
-                )
-                evaluation_response = response.text
-                
-                # Store the evaluation data
-                evaluations = request.session.get("evaluations", [])
-                
-                # Update or append evaluation for current question
-                evaluation_data = {
-                    "question_index": current_question_index,
-                    "question": current_question,
-                    "answer": user_answer,
-                    "evaluation": evaluation_response,
-                    "timestamp": datetime.now().isoformat()
-                }
-                
-                # Check if evaluation for this question already exists
-                existing_index = None
-                for i, eval_item in enumerate(evaluations):
-                    if eval_item["question_index"] == current_question_index:
-                        existing_index = i
-                        break
-                
-                if existing_index is not None:
-                    evaluations[existing_index] = evaluation_data
-                else:
-                    evaluations.append(evaluation_data)
-                
-                request.session["evaluations"] = evaluations
-        
-        # Handle navigation
         if "next" in request.POST and current_question_index < total_questions - 1:
             current_question_index += 1
         elif "prev" in request.POST and current_question_index > 0:
             current_question_index -= 1
-        
-        # Get current question for display
         current_question = questions[current_question_index] if questions else ""
-        
-        # Get stored answer for current question
-        evaluations = request.session.get("evaluations", [])
-        stored_answer = ""
-        stored_evaluation = "Evaluation not available"
-        
-        for eval_item in evaluations:
-            if eval_item["question_index"] == current_question_index:
-                stored_answer = eval_item["answer"]
-                stored_evaluation = eval_item["evaluation"]
-                break
-        
-        # Check if test is complete (all questions have been answered)
-        answered_questions = len([e for e in evaluations if e["answer"].strip()])
-        is_complete = answered_questions == total_questions
-        
+        user_answer = request.POST.get("user_answer", "")
+        evaluation_response = "Evaluation not available"
+        if user_answer and current_question:
+            response = client.models.generate_content(
+                model='gemini-2.0-flash', 
+                contents=f"Evaluate the following answer: {user_answer} for the question: {current_question}.Grade the answer. Explain the answer if it is wrong. Give ways to improve the answer if needed.",
+            )
+            evaluation_response = response.text
         context = {
             "current_question": current_question,
             "current_question_index": current_question_index,
             "total_questions": total_questions,
-            "evaluation_response": markdown.markdown(stored_evaluation),
-            "user_answer": stored_answer,
-            "intype": intype,
-            "is_complete": is_complete,
-            "answered_questions": answered_questions,
-        }
+            "evaluation_response": markdown.markdown(evaluation_response),
+            "user_answer": user_answer,        }
         
         return render(request, "evaluate_assignment.html", context)    
     return render(request, "upload_assignment.html")
