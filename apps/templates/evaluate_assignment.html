@@ -11,17 +11,21 @@
       crossorigin="anonymous"
     />
     <style>
-      body {
-        font-family: "Arial", sans-serif;
-        background: linear-gradient(145deg, #ff6b6b, #f7b7a3, #4e73df);
-        color: #fff;
+      .center-container {
+        min-height: 80vh;
         display: flex;
         flex-direction: column;
-        justify-content: center;
         align-items: center;
-        min-height: 100vh;
+        justify-content: center;
+        width: 100%;
+      }
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f7f8fa;
+        color: #232946;
         margin: 0;
-        overflow-y: auto;
+        min-height: 100vh;
+        overflow-x: hidden;
         padding: 20px;
       }
 
@@ -192,7 +196,8 @@
         font-weight: 600;
       }
 
-      .evaluation-section ul, .evaluation-section ol {
+      .evaluation-section ul,
+      .evaluation-section ol {
         margin: 15px 0;
         padding-left: 30px;
         color: #34495e;
@@ -218,7 +223,7 @@
         color: #d73a49;
         padding: 0.2em 0.4em;
         border-radius: 3px;
-        font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        font-family: "Consolas", "Monaco", "Courier New", monospace;
         font-size: 85%;
       }
 
@@ -399,50 +404,31 @@
     </style>
   </head>
   <body>
-    {% if current_question_index < total_questions|add:"-1" %}
-    <a href="/evaluate_assignment/" class="exit-button">Exit</a>
-    {% endif %}
+    <div class="center-container">
+      {% if current_question_index < total_questions|add:"-1" %}
+      <a href="/evaluate_assignment/" class="exit-button">Exit</a>
+      {% endif %}
 
-    <!-- Progress Indicator -->
-    <div class="progress-indicator">
-      <h2>Question {{ current_question_index|add:"1" }} of {{ total_questions }}</h2>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: {% widthratio current_question_index|add:'1' total_questions 100 %}%"></div>
+      <!-- Progress Indicator -->
+      <div class="progress-indicator">
+        <h2>
+          Question {{ current_question_index|add:"1" }} of {{ total_questions }}
+        </h2>
+        <div class="progress-bar">
+          <div
+            class="progress-fill"
+            style="width: {% widthratio current_question_index|add:'1' total_questions 100 %}%"
+          ></div>
+        </div>
       </div>
-    </div>
 
-    <!-- Question Container -->
-    <div class="question-container">
-      <h3>📝 Current Question</h3>
-      <p><strong>{{ current_question }}</strong></p>
-    </div>
+      <!-- Question Container -->
+      <div class="question-container">
+        <h3>📝 Current Question</h3>
+        <p><strong>{{ current_question }}</strong></p>
+      </div>
 
-    <!-- Answer Form -->
-    <form action="/evaluate_assignment/" method="post">
-      {% csrf_token %}
-      <input type="hidden" name="intype" value="{{ intype }}" />
-      <input
-        type="hidden"
-        name="current_question_index"
-        value="{{ current_question_index }}"
-      />
-
-      <label for="user_answer">Your Answer:</label>
-      <textarea name="user_answer" id="user_answer" rows="6" cols="50" placeholder="Type your detailed answer here...">{{ user_answer }}</textarea>
-
-      <button type="submit" name="submit">Submit Answer</button>
-    </form>
-
-    <!-- Evaluation Results -->
-    {% if evaluation_response %}
-    <div class="evaluation-section">
-      <h3>📊 Evaluation Results</h3>
-      <div>{{ evaluation_response|safe }}</div>
-    </div>
-    {% endif %}
-
-    <!-- Navigation Buttons -->
-    <div class="nav-buttons">
+      <!-- Answer Form -->
       <form action="/evaluate_assignment/" method="post">
         {% csrf_token %}
         <input type="hidden" name="intype" value="{{ intype }}" />
@@ -452,20 +438,52 @@
           value="{{ current_question_index }}"
         />
 
-        {% if current_question_index > 0 %}
-        <button type="submit" name="prev">← Previous Question</button>
-        {% else %}
-        <button type="button" disabled>← Previous Question</button>
-        {% endif %} 
-        
-        {% if current_question_index < total_questions|add:"-1" %}
-        <button type="submit" name="next">Next Question →</button>
-        {% else %}
-        <button class="lexit-button">
-          <a href="/evaluate_assignment/">🏁 Complete Assignment</a>
-        </button>
-        {% endif %}
+        <label for="user_answer">Your Answer:</label>
+        <textarea
+          name="user_answer"
+          id="user_answer"
+          rows="6"
+          cols="50"
+          placeholder="Type your detailed answer here..."
+        >
+{{ user_answer }}</textarea
+        >
+
+        <button type="submit" name="submit">Submit Answer</button>
       </form>
+
+      <!-- Evaluation Results -->
+      {% if evaluation_response %}
+      <div class="evaluation-section">
+        <h3>📊 Evaluation Results</h3>
+        <div>{{ evaluation_response|safe }}</div>
+      </div>
+      {% endif %}
+
+      <!-- Navigation Buttons -->
+      <div class="nav-buttons">
+        <form action="/evaluate_assignment/" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="intype" value="{{ intype }}" />
+          <input
+            type="hidden"
+            name="current_question_index"
+            value="{{ current_question_index }}"
+          />
+
+          {% if current_question_index > 0 %}
+          <button type="submit" name="prev">← Previous Question</button>
+          {% else %}
+          <button type="button" disabled>← Previous Question</button>
+          {% endif %} {% if current_question_index < total_questions|add:"-1" %}
+          <button type="submit" name="next">Next Question →</button>
+          {% else %}
+          <button class="lexit-button">
+            <a href="/evaluate_assignment/">🏁 Complete Assignment</a>
+          </button>
+          {% endif %}
+        </form>
+      </div>
     </div>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

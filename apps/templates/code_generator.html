@@ -11,12 +11,53 @@
       crossorigin="anonymous"
     />
     <style>
+      @media (max-width: 768px) {
+        .image-gen-container {
+          max-width: 100vw !important;
+          box-sizing: border-box;
+          padding-left: 2vw !important;
+          padding-right: 2vw !important;
+        }
+        .main-content-wrapper {
+          max-width: 100vw !important;
+          box-sizing: border-box;
+          overflow-x: hidden !important;
+        }
+        form {
+          padding: 20px !important;
+          width: 90% !important;
+        }
+        button {
+          padding: 12px 24px !important;
+        }
+      }
+      .navbar {
+        background: #fff !important;
+        border-bottom: 2px solid #eebbc3;
+        box-shadow: 0 2px 12px rgba(35, 41, 70, 0.04);
+      }
+      .navbar-brand {
+        color: #ff6b6b !important;
+        font-weight: 800;
+        font-size: 1.6rem;
+        letter-spacing: 1px;
+      }
+      .navbar-nav .nav-link {
+        color: #232946 !important;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        transition: color 0.2s;
+      }
+      .navbar-nav .nav-link:hover {
+        color: #ff6b6b !important;
+      }
       body {
-        font-family: Arial, sans-serif;
-        background: linear-gradient(145deg, #ff6b6b, #f7b7a3, #4e73df);
-        margin: 20px;
-        background-color: #f9f9f9;
-        color: #333;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f7f8fa;
+        color: #232946;
+        margin: 0;
+        min-height: 100vh;
+        overflow-x: hidden;
       }
 
       h1 {
@@ -49,18 +90,6 @@
         border-radius: 8px;
         border: 1px solid #ccc;
         background-color: #333;
-        color: #fff;
-        font-size: 16px;
-        transition: background-color 0.3s ease;
-      }
-
-      input[type="text"]:focus {
-        background-color: #555;
-        outline: none;
-      }
-      textarea:focus {
-        background-color: #555;
-        outline: none;
       }
 
       button {
@@ -158,23 +187,7 @@
 
       /* Copy button styling */
       .response-container pre::after {
-        content: "Copy";
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        background: #238636;
-        color: white;
-        border: none;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 12px;
-        cursor: pointer;
-        z-index: 3;
-        transition: background-color 0.2s;
-      }
-
-      .response-container pre:hover::after {
-        background: #2ea043;
+        display: none !important;
       }
 
       /* Language label */
@@ -324,19 +337,18 @@
       }
 
       .navbar-nav .nav-link {
-        color: white !important;
-        font-weight: bold;
-
-        transition: color 0.3s ease-in-out;
+        color: #232946 !important;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        transition: color 0.2s;
       }
-
       .navbar-nav .nav-link:hover {
         color: #ff6b6b !important;
       }
     </style>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg w-100 custom-navbar">
+    <nav class="navbar navbar-expand-lg w-100">
       <div class="container-fluid">
         <a class="navbar-brand" href="/">StudyBud</a>
         <button
@@ -351,67 +363,224 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
+          <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="/study_plan/"
-                >Study Planner</a
-              >
+              <a class="nav-link" href="/study_plan/">Study Planner</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/generate_code">Code Generator</a>
+              <a class="nav-link" href="/evaluate_assignment/"
+                >Evaluate Assignment</a
+              >
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/generate_image">Generate Image</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/evaluate_assignment/"
-                >Upload Assignment</a
-              >
+              <a class="nav-link" href="/generate_code">Code Generator</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/annotate/">Describe Image</a>
             </li>
             <li class="nav-item">
-              <a href="/pomodoro" class="nav-link">Pomodoro Timer</a>
+              <a class="nav-link" href="/pomodoro">Pomodoro Timer</a>
             </li>
           </ul>
         </div>
       </div>
     </nav>
-    <br />
-
-    <h1 style="color: white">Code Generator</h1>
-
-    <form method="post" action="{% url 'generate_code' %}">
-      {% csrf_token %}
-
-      <label for="problem_statement">Problem Statement:</label><br />
-      <textarea
-        id="problem_statement"
-        name="problem_statement"
-        rows="4"
-        cols="50"
-        required
-      ></textarea
-      ><br /><br />
-
-      <label for="language">Programming Language:</label><br />
-      <input type="text" id="language" name="language" required /><br /><br />
-
-      <label for="explanguage">Explanation Language:</label><br />
-      <input type="text" id="explanguage" name="explanguage" /><br /><br />
-
-      <button type="submit">Generate Code</button>
-    </form>
-
-    {% if response %}
-    <div class="response-container">
-      <h2 style="color: #2c3e50; border-bottom: 2px solid #3498db">
-        Generated Code and Explanation
-      </h2>
-      <div class="content">{{ response|safe }}</div>
+    <div
+      class="main-content-wrapper"
+      style="
+        padding: 0 20px;
+        min-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+      "
+    >
+      <div
+        class="center-container"
+        style="
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <div><br /></div>
+        <div
+          class="image-gen-container"
+          style="
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 60px 40px 40px 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            margin: 0 auto;
+            display: inline-block;
+          "
+        >
+          <h1
+            style="
+              color: #fff;
+              text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+              margin-bottom: 30px;
+            "
+          >
+            Code Generator
+          </h1>
+          <form
+            method="post"
+            action="{% url 'generate_code' %}"
+            style="max-width: 500px; margin: 0 auto"
+          >
+            {% csrf_token %}
+            <label
+              for="problem_statement"
+              style="color: #f4f4f4; font-weight: 600"
+              >Problem Statement:</label
+            ><br />
+            <textarea
+              id="problem_statement"
+              name="problem_statement"
+              rows="4"
+              cols="50"
+              required
+              style="
+                width: 100%;
+                padding: 12px;
+                margin-bottom: 20px;
+                border-radius: 8px;
+                border: 1px solid #ccc;
+                background-color: #333;
+                color: #fff;
+                font-size: 16px;
+                transition: background-color 0.3s ease;
+              "
+            ></textarea
+            ><br /><br />
+            <label for="language" style="color: #f4f4f4; font-weight: 600"
+              >Programming Language:</label
+            ><br />
+            <input
+              type="text"
+              id="language"
+              name="language"
+              required
+              style="
+                width: 100%;
+                padding: 12px;
+                margin-bottom: 20px;
+                border-radius: 8px;
+                border: 1px solid #ccc;
+                background-color: #333;
+                color: #fff;
+                font-size: 16px;
+                transition: background-color 0.3s ease;
+              "
+            /><br /><br />
+            <label for="explanguage" style="color: #f4f4f4; font-weight: 600"
+              >Explanation Language:</label
+            ><br />
+            <input
+              type="text"
+              id="explanguage"
+              name="explanguage"
+              style="
+                width: 100%;
+                padding: 12px;
+                margin-bottom: 20px;
+                border-radius: 8px;
+                border: 1px solid #ccc;
+                background-color: #333;
+                color: #fff;
+                font-size: 16px;
+                transition: background-color 0.3s ease;
+              "
+            /><br /><br />
+            <button
+              type="submit"
+              id="codeGenBtn"
+              style="
+                background: linear-gradient(145deg, #ff6b6b, #f7b7a3);
+                color: white;
+                padding: 15px 30px;
+                border-radius: 10px;
+                border: none;
+                font-size: 18px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                width: 100%;
+                font-weight: bold;
+                position: relative;
+              "
+            >
+              Generate Code
+              <div
+                class="loading"
+                id="loadingSpinner"
+                style="
+                  display: none;
+                  position: absolute;
+                  right: 20px;
+                  top: 50%;
+                  transform: translateY(-50%);
+                "
+              >
+                <div
+                  class="spinner"
+                  style="
+                    border: 4px solid #f3f3f3;
+                    border-top: 4px solid #ff6b6b;
+                    border-radius: 50%;
+                    width: 30px;
+                    height: 30px;
+                    animation: spin 2s linear infinite;
+                  "
+                ></div>
+              </div>
+            </button>
+          </form>
+          {% if response %}
+          <div
+            class="response-container"
+            style="margin-top: 32px; text-align: left"
+          >
+            <h2
+              style="
+                color: #2c3e50;
+                border-bottom: 2px solid #3498db;
+                text-align: left;
+              "
+            >
+              Generated Code and Explanation
+            </h2>
+            <div class="content" style="text-align: left">
+              {{ response|safe }}
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
     </div>
-    {% endif %}
+    <br />
+    <style>
+      .loading.show {
+        display: block !important;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
@@ -419,29 +588,46 @@
     ></script>
 
     <script>
-      // Add copy functionality to code blocks
+      // Add loading spinner to code generator form
       document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector(
+          "form[action^='{% url 'generate_code' %}'], form[action='/generate_code']"
+        );
+        const loadingSpinner = document.getElementById("loadingSpinner");
+        const codeGenBtn = document.getElementById("codeGenBtn");
+        if (form && loadingSpinner && codeGenBtn) {
+          form.addEventListener("submit", function (event) {
+            loadingSpinner.classList.add("show");
+            codeGenBtn.setAttribute("disabled", "disabled");
+          });
+        }
+
+        // Add copy functionality to code blocks
         const preElements = document.querySelectorAll(
           ".response-container pre"
         );
 
         preElements.forEach(function (pre, index) {
+          // Prevent duplicate copy buttons
+          if (pre.querySelector(".copy-btn")) return;
           // Create copy button
           const copyBtn = document.createElement("button");
           copyBtn.className = "copy-btn";
           copyBtn.innerHTML = "Copy";
           copyBtn.style.cssText = `
             position: absolute;
-            top: 8px;
-            right: 8px;
+            top: 0;
+            right: 0;
+            margin: 0;
             background: #238636;
             color: white;
             border: none;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
+            padding: 6px 18px;
+            border-radius: 6px 6px 0 0;
+            font-size: 14px;
+            font-weight: bold;
             cursor: pointer;
-            z-index: 3;
+            z-index: 10;
             transition: background-color 0.2s;
           `;
 
@@ -486,8 +672,10 @@
               });
           });
 
+          // Ensure pre is positioned relative for absolute button
           pre.style.position = "relative";
-          pre.appendChild(copyBtn);
+          // Insert the button as the first child so it appears above the code content
+          pre.insertBefore(copyBtn, pre.firstChild);
         });
       });
     </script>

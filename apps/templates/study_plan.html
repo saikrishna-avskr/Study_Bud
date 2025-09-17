@@ -26,18 +26,16 @@
 
       /* General body styling */
       body {
-        font-family: "Arial", sans-serif;
-        /* background: linear-gradient(145deg, #2E4A7F, #4B6CB7);
-             */
-
-        background: linear-gradient(145deg, #ff6b6b, #f7b7a3, #4e73df);
-        color: #fff;
-        padding: 20px;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f7f8fa;
+        color: #232946;
+        margin: 0;
+        min-height: 100vh;
+        overflow-x: hidden;
+        padding: 0;
         display: flex;
         flex-direction: column;
         align-items: center;
-        min-height: 100vh;
-        overflow-x: hidden;
       }
 
       h1 {
@@ -438,25 +436,30 @@
         }
       }
 
-      .custom-navbar {
-        background: rgba(0, 0, 0, 0.2) !important; /* Semi-transparent black */
-        backdrop-filter: blur(10px); /* Optional: Glassmorphism effect */
-        border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Optional subtle border */
+      .navbar {
+        background: #fff !important;
+        border-bottom: 2px solid #eebbc3;
+        box-shadow: 0 2px 12px rgba(35, 41, 70, 0.04);
       }
-
+      .navbar-brand {
+        color: #ff6b6b !important;
+        font-weight: 800;
+        font-size: 1.6rem;
+        letter-spacing: 1px;
+      }
       .navbar-nav .nav-link {
-        color: white !important; /* Ensure links remain visible */
-        font-weight: bold;
-        transition: color 0.3s ease-in-out;
+        color: #232946 !important;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        transition: color 0.2s;
       }
-
       .navbar-nav .nav-link:hover {
-        color: #ff6b6b !important; /* Highlight effect on hover */
+        color: #ff6b6b !important;
       }
     </style>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg w-100 custom-navbar">
+    <nav class="navbar navbar-expand-lg w-100">
       <div class="container-fluid">
         <a class="navbar-brand" href="/">StudyBud</a>
         <button
@@ -471,60 +474,240 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
+          <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="/study_plan/"
-                >Study Planner</a
-              >
+              <a class="nav-link" href="/study_plan/">Study Planner</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/generate_code">Code Generator</a>
+              <a class="nav-link" href="/evaluate_assignment/"
+                >Evaluate Assignment</a
+              >
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/generate_image">Generate Image</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/evaluate_assignment/"
-                >Upload Assignment</a
-              >
+              <a class="nav-link" href="/generate_code">Code Generator</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/annotate/">Describe Image</a>
             </li>
             <li class="nav-item">
-              <a href="/pomodoro" class="nav-link">Pomodoro Timer</a>
+              <a class="nav-link" href="/pomodoro">Pomodoro Timer</a>
             </li>
           </ul>
         </div>
       </div>
     </nav>
 
+    <div
+      class="main-content-wrapper"
+      style="
+        padding: 0 8px;
+        min-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+      "
+    >
+      <div
+        class="center-container"
+        style="
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <div><br /></div>
+        <div
+          class="image-gen-container"
+          style="
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 40px 12px 28px 12px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            margin: 0 auto;
+            display: inline-block;
+            width: 100%;
+            max-width: 500px;
+          "
+        >
+          <h1
+            style="
+              color: #fff;
+              text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+              margin-bottom: 30px;
+            "
+          >
+            Study Plan Generator
+          </h1>
+          <form
+            method="post"
+            id="study-plan-form"
+            style="max-width: 500px; margin: 0 auto"
+          >
+            {% csrf_token %}
+            <label for="subject" style="color: #f4f4f4; font-weight: 600"
+              >Subject:</label
+            ><br />
+            <input
+              type="text"
+              id="subject"
+              name="subject"
+              required
+              style="
+                width: 100%;
+                padding: 12px;
+                margin-bottom: 20px;
+                border-radius: 8px;
+                border: 1px solid #ccc;
+                background-color: #333;
+                color: #fff;
+                font-size: 16px;
+                transition: background-color 0.3s ease;
+              "
+            /><br />
+            <label for="exam_date" style="color: #f4f4f4; font-weight: 600"
+              >Exam Date:</label
+            ><br />
+            <input
+              type="date"
+              id="exam_date"
+              name="exam_date"
+              required
+              style="
+                width: 100%;
+                padding: 12px;
+                margin-bottom: 20px;
+                border-radius: 8px;
+                border: 1px solid #ccc;
+                background-color: #333;
+                color: #fff;
+                font-size: 16px;
+                transition: background-color 0.3s ease;
+              "
+            /><br />
+            <label for="study_time" style="color: #f4f4f4; font-weight: 600"
+              >Study Time per Day (hours):</label
+            ><br />
+            <input
+              type="text"
+              id="study_time"
+              name="study_time"
+              required
+              style="
+                width: 100%;
+                padding: 12px;
+                margin-bottom: 20px;
+                border-radius: 8px;
+                border: 1px solid #ccc;
+                background-color: #333;
+                color: #fff;
+                font-size: 16px;
+                transition: background-color 0.3s ease;
+              "
+            /><br />
+            <label for="topics" style="color: #f4f4f4; font-weight: 600"
+              >Topics:</label
+            ><br />
+            <input
+              type="text"
+              id="topics"
+              name="topics"
+              required
+              style="
+                width: 100%;
+                padding: 12px;
+                margin-bottom: 20px;
+                border-radius: 8px;
+                border: 1px solid #ccc;
+                background-color: #333;
+                color: #fff;
+                font-size: 16px;
+                transition: background-color 0.3s ease;
+              "
+            /><br />
+            <label for="methods" style="color: #f4f4f4; font-weight: 600"
+              >Study Methods:</label
+            ><br />
+            <input
+              type="text"
+              id="methods"
+              name="methods"
+              style="
+                width: 100%;
+                padding: 12px;
+                margin-bottom: 20px;
+                border-radius: 8px;
+                border: 1px solid #ccc;
+                background-color: #333;
+                color: #fff;
+                font-size: 16px;
+                transition: background-color 0.3s ease;
+              "
+            /><br />
+            <label for="notes" style="color: #f4f4f4; font-weight: 600"
+              >Additional Notes:</label
+            ><br />
+            <textarea
+              id="notes"
+              name="notes"
+              style="
+                width: 100%;
+                padding: 12px;
+                margin-bottom: 20px;
+                border-radius: 8px;
+                border: 1px solid #ccc;
+                background-color: #333;
+                color: #fff;
+                font-size: 16px;
+                transition: background-color 0.3s ease;
+              "
+            ></textarea
+            ><br />
+            <button
+              type="submit"
+              id="studyPlanBtn"
+              style="
+                background: linear-gradient(145deg, #ff6b6b, #f7b7a3);
+                color: white;
+                padding: 15px 30px;
+                border-radius: 10px;
+                border: none;
+                font-size: 18px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                width: 100%;
+                font-weight: bold;
+                position: relative;
+              "
+            >
+              Generate Plan
+              <div
+                class="loading"
+                id="loadingSpinner"
+                style="
+                  display: none;
+                  position: absolute;
+                  right: 20px;
+                  top: 50%;
+                  transform: translateY(-50%);
+                "
+              >
+                <div class="spinner"></div>
+              </div>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Spinner now inside button -->
     <br />
-    <h1>Study Plan Generator</h1>
-    <form method="post" id="study-plan-form">
-      {% csrf_token %}
-      <label for="subject">Subject:</label><br />
-      <input type="text" id="subject" name="subject" required /><br />
-
-      <label for="exam_date">Exam Date:</label><br />
-      <input type="date" id="exam_date" name="exam_date" required /><br />
-
-      <label for="study_time">Study Time per Day (hours):</label><br />
-      <input type="text" id="study_time" name="study_time" required /><br />
-
-      <label for="topics">Topics:</label><br />
-      <input type="text" id="topics" name="topics" required /><br />
-
-      <label for="methods">Study Methods:</label><br />
-      <input type="text" id="methods" name="methods" /><br />
-
-      <label for="notes">Additional Notes:</label><br />
-      <textarea id="notes" name="notes"></textarea><br />
-
-      <input type="submit" value="Generate Plan" />
-    </form>
-    <div id="loading-spinner" class="loading-spinner"></div>
-
     {% if study_plan_text %}
     <div class="study-plan-container">
       <h2 style="color: #2c3e50; border-bottom: 2px solid #3498db">
@@ -536,15 +719,34 @@
     <p class="error">{{ error }}</p>
     {% endif %}
 
+    <style>
+      .loading.show {
+        display: block !important;
+      }
+      .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #ff6b6b;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 2s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
     <script>
       const form = document.getElementById("study-plan-form");
-      const spinner = document.getElementById("loading-spinner");
-
+      const loadingSpinner = document.getElementById("loadingSpinner");
+      const studyPlanBtn = document.getElementById("studyPlanBtn");
       form.addEventListener("submit", function (event) {
-        event.preventDefault();
-        setTimeout(function () {
-          form.submit();
-        }, 2000);
+        loadingSpinner.classList.add("show");
+        studyPlanBtn.setAttribute("disabled", "disabled");
       });
     </script>
     <script

@@ -11,212 +11,236 @@
       crossorigin="anonymous"
     />
     <style>
-      /* General body and layout styling */
-      body {
-        font-family: "Arial", sans-serif;
-        background: linear-gradient(
-          145deg,
-          #ff6b6b,
-          #f7b7a3,
-          #4e73df
-        ); /* Warm and cool gradient */
-        color: #fff;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        margin: 0;
-        overflow-y: scroll; /* Enable vertical scroll */
-        padding: 20px;
-      }
+          .navbar {
+            background: #fff !important;
+            border-bottom: 2px solid #eebbc3;
+            box-shadow: 0 2px 12px rgba(35, 41, 70, 0.04);
+          }
+          .navbar-brand {
+            color: #ff6b6b !important;
+            font-weight: 800;
+            font-size: 1.6rem;
+            letter-spacing: 1px;
+          }
+          .navbar-nav .nav-link {
+            color: #232946 !important;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            transition: color 0.2s;
+          }
+          .navbar-nav .nav-link:hover {
+            color: #ff6b6b !important;
+          }
+          .center-container {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+          }
 
-      /* Custom Scrollbar Styling */
-      body::-webkit-scrollbar {
-        width: 10px;
-      }
+          .image-gen-container {
+            max-width: 100vw !important;
+            box-sizing: border-box;
+          }
+          }
+          /* General body and layout styling */
+          body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f7f8fa;
+            color: #232946;
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 0 0 20px 0;
+          }
 
-      body::-webkit-scrollbar-track {
-        background: #f1f1f1;
-      }
+          /* Custom Scrollbar Styling */
+          body::-webkit-scrollbar {
+            width: 10px;
+          }
 
-      body::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 10px;
-      }
+          body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+          }
 
-      body::-webkit-scrollbar-thumb:hover {
-        background: #555;
-      }
+          body::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+          }
 
-      /* Header Styling */
-      h1 {
-        font-size: 36px;
-        margin-bottom: 30px;
-        text-align: center;
-        color: #fff;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-      }
+          body::-webkit-scrollbar-thumb:hover {
+            background: #555;
+          }
 
-      /* Form container */
-      form {
-        background-color: rgba(0, 0, 0, 0.7); /* Slightly darker background */
-        padding: 40px;
-        border-radius: 15px;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        max-width: 500px;
-        width: 100%;
-        animation: slideIn 1s ease-out;
-        text-align: center;
-      }
+          /* Header Styling */
+          h1 {
+            font-size: 36px;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+          }
 
-      /* Slide-in effect for form */
-      @keyframes slideIn {
-        0% {
-          opacity: 0;
-          transform: translateX(-30px);
-        }
-        100% {
-          opacity: 1;
-          transform: translateX(0);
-        }
-      }
+          /* Form container */
+          form {
+            background-color: rgba(0, 0, 0, 0.7); /* Slightly darker background */
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 100%;
+            animation: slideIn 1s ease-out;
+            text-align: center;
+          }
 
-      /* Form label styling */
-      label {
-        font-size: 18px;
-        margin-bottom: 8px;
-        display: block;
-        color: #f4f4f4;
-        font-weight: 600;
-      }
+          /* Slide-in effect for form */
+          @keyframes slideIn {
+            0% {
+              opacity: 0;
+              transform: translateX(-30px);
+            }
+            100% {
+              opacity: 1;
+              transform: translateX(0);
+            }
+          }
 
-      /* Input field styling */
-      input[type="text"] {
-        width: 100%;
-        padding: 12px;
-        margin-bottom: 20px;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-        background-color: #333;
-        color: #fff;
-        font-size: 16px;
-        transition: background-color 0.3s ease;
-      }
+          /* Form label styling */
+          label {
+            font-size: 18px;
+            margin-bottom: 8px;
+            display: block;
+            color: #f4f4f4;
+            font-weight: 600;
+          }
 
-      input[type="text"]:focus {
-        background-color: #555;
-        outline: none;
-      }
+          /* Input field styling */
+          input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #333;
+            color: #fff;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+          }
 
-      /* Submit button styling */
-      button {
-        background: linear-gradient(
-          145deg,
-          #ff6b6b,
-          #f7b7a3
-        ); /* Gradient button */
-        color: white;
-        padding: 15px 30px;
-        border-radius: 10px;
-        border: none;
-        font-size: 18px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        width: 100%;
-        font-weight: bold;
-        position: relative;
-      }
+          input[type="text"]:focus {
+            background-color: #555;
+            outline: none;
+          }
 
-      button:hover {
-        transform: scale(1.05);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-      }
+          /* Submit button styling */
+          button {
+            background: linear-gradient(
+              145deg,
+              #ff6b6b,
+              #f7b7a3
+            ); /* Gradient button */
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-weight: bold;
+            position: relative;
+          }
 
-      /* Loading spinner styling */
-      .loading {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        display: none;
-      }
+          button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+          }
 
-      .loading.show {
-        display: block;
-      }
+          /* Loading spinner styling */
+          .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+          }
 
-      .spinner {
-        border: 4px solid #f3f3f3; /* Light grey */
-        border-top: 4px solid #ff6b6b; /* Red color */
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-        animation: spin 2s linear infinite;
-      }
+          .loading.show {
+            display: block;
+          }
 
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
+          .spinner {
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid #ff6b6b; /* Red color */
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 2s linear infinite;
+          }
 
-      /* Generated Image Styling */
-      img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        margin-top: 20px;
-        animation: fadeIn 1.5s ease-in-out;
-      }
+          @keyframes spin {
+            0% {
+              transform: rotate(0deg);
+            }
+            100% {
+              transform: rotate(360deg);
+            }
+          }
 
-      /* Animation for fade-in */
-      @keyframes fadeIn {
-        0% {
-          opacity: 0;
-          transform: translateY(-20px);
-        }
-        100% {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
+          /* Generated Image Styling */
+          img {
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      margin-top: 20px;
+      animation: fadeIn 1.5s ease-in-out;
+      max-width: 100vw;
+      width: 100%;
+      height: auto;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+          }
 
-      /* Responsive Design */
-      @media (max-width: 768px) {
-        form {
-          padding: 20px;
-          width: 90%;
-        }
+          /* Animation for fade-in */
+          @keyframes fadeIn {
+            0% {
+              opacity: 0;
+              transform: translateY(-20px);
+            }
+            100% {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
 
-        button {
-          padding: 12px 24px;
-        }
-      }
-      .custom-navbar {
-        background: rgba(0, 0, 0, 0.2) !important; /* Semi-transparent black */
-        backdrop-filter: blur(10px); /* Optional: Glassmorphism effect */
-        border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Optional subtle border */
-      }
+          /* Responsive Design */
+          @media (max-width: 768px) {
+            .image-gen-container {
+              max-width: 98vw !important;
+              padding-left: 2vw !important;
+              padding-right: 2vw !important;
+            }
+            img {
+              max-width: 96vw;
+            }
+            form {
+              padding: 20px;
+              width: 90%;
+            }
 
-      .navbar-nav .nav-link {
-        color: white !important; /* Ensure links remain visible */
-        font-weight: bold;
-        transition: color 0.3s ease-in-out;
-      }
-
-      .navbar-nav .nav-link:hover {
-        color: #ff6b6b !important; /* Highlight effect on hover */
-      }
+            button {
+              padding: 12px 24px;
+            }
+          }
+          /* Removed conflicting .custom-navbar and .navbar-nav .nav-link styles. Nav CSS now matches index page. */
     </style>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg w-100 custom-navbar">
+    <nav class="navbar navbar-expand-lg w-100">
       <div class="container-fluid">
-        <a class="navbar-brand" href="/">StudyBud</a>
+        <a class="navbar-brand fw-bold text-white" href="/">StudyBud</a>
         <button
           class="navbar-toggler"
           type="button"
@@ -229,50 +253,85 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
+          <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="/study_plan/"
-                >Study Planner</a
-              >
+              <a class="nav-link" href="/study_plan/">Study Planner</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/generate_code">Code Generator</a>
+              <a class="nav-link" href="/evaluate_assignment/"
+                >Evaluate Assignment</a
+              >
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/generate_image">Generate Image</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/evaluate_assignment/"
-                >Upload Assignment</a
-              >
+              <a class="nav-link" href="/generate_code">Code Generator</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/annotate/">Describe Image</a>
             </li>
             <li class="nav-item">
-              <a href="/pomodoro" class="nav-link">Pomodoro Timer</a>
+              <a class="nav-link" href="/pomodoro">Pomodoro Timer</a>
             </li>
           </ul>
         </div>
       </div>
     </nav>
-    <br />
-    <h1>Generate Image</h1>
-    <form method="POST" action="{% url 'generate_image' %}" id="imageForm">
-      {% csrf_token %}
-      <label for="prompt">Enter your prompt:</label>
-      <input type="text" id="prompt" name="prompt" required />
-      <button type="submit">
-        Generate Image
-        <div class="loading" id="loadingSpinner">
-          <div class="spinner"></div>
+    <div class="main-content-wrapper" style="padding: 0 20px">
+      <div class="center-container">
+        <div>
+          <br />
         </div>
-      </button>
-    </form>
-    {% if image_base64 %}
-    <h2>Generated Image:</h2>
-    <img src="data:image/png;base64,{{ image_base64 }}" alt="Generated Image" />
-    {% endif %}
+        <div
+          class="image-gen-container"
+          style="
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 60px 40px 40px 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            margin: 0 auto;
+            display: inline-block;
+          "
+        >
+          <h1
+            style="
+              color: #fff;
+              text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+              margin-bottom: 30px;
+            "
+          >
+            Generate Image
+          </h1>
+          <form
+            method="POST"
+            action="{% url 'generate_image' %}"
+            id="imageForm"
+            style="max-width: 500px; margin: 0 auto"
+          >
+            {% csrf_token %}
+            <label for="prompt">Enter your prompt:</label>
+            <input type="text" id="prompt" name="prompt" required />
+            <button type="submit">
+              Generate Image
+              <div class="loading" id="loadingSpinner">
+                <div class="spinner"></div>
+              </div>
+            </button>
+          </form>
+          {% if image_base64 %}
+          <h2 style="color: #fff; margin-top: 32px">Generated Image:</h2>
+          <div style="display: inline-block">
+            <img
+              src="data:image/png;base64,{{ image_base64 }}"
+              alt="Generated Image"
+            />
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
 
     <script>
       const form = document.getElementById("imageForm");

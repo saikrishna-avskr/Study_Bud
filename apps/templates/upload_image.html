@@ -12,11 +12,13 @@
     />
     <style>
       body {
-        font-family: Arial, sans-serif;
-        background: linear-gradient(145deg, #ff6b6b, #f7b7a3, #4e73df);
-        margin: 20px;
-        background-color: #f9f9f9;
-        color: #333;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f7f8fa;
+        color: #232946;
+        margin: 0;
+        min-height: 100vh;
+        overflow-x: hidden;
+        padding: 0;
       }
 
       h2 {
@@ -94,26 +96,30 @@
         }
       }
 
-      .custom-navbar {
-        background: rgba(0, 0, 0, 0.2) !important; /* Semi-transparent black */
-        backdrop-filter: blur(10px); /* Optional: Glassmorphism effect */
-        border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Optional subtle border */
+      .navbar {
+        background: #fff !important;
+        border-bottom: 2px solid #eebbc3;
+        box-shadow: 0 2px 12px rgba(35, 41, 70, 0.04);
       }
-
+      .navbar-brand {
+        color: #ff6b6b !important;
+        font-weight: 800;
+        font-size: 1.6rem;
+        letter-spacing: 1px;
+      }
       .navbar-nav .nav-link {
-        color: white !important; /* Ensure links remain visible */
-        font-weight: bold;
-
-        transition: color 0.3s ease-in-out;
+        color: #232946 !important;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        transition: color 0.2s;
       }
-
       .navbar-nav .nav-link:hover {
-        color: #ff6b6b !important; /* Highlight effect on hover */
+        color: #ff6b6b !important;
       }
     </style>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg w-100 custom-navbar">
+    <nav class="navbar navbar-expand-lg w-100">
       <div class="container-fluid">
         <a class="navbar-brand" href="/">StudyBud</a>
         <button
@@ -128,28 +134,26 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
+          <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="/study_plan/"
-                >Study Planner</a
-              >
+              <a class="nav-link" href="/study_plan/">Study Planner</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/generate_code">Code Generator</a>
+              <a class="nav-link" href="/evaluate_assignment/"
+                >Evaluate Assignment</a
+              >
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/generate_image">Generate Image</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/evaluate_assignment/"
-                >Upload Assignment</a
-              >
+              <a class="nav-link" href="/generate_code">Code Generator</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/annotate/">Describe Image</a>
             </li>
             <li class="nav-item">
-              <a href="/pomodoro" class="nav-link">Pomodoro Timer</a>
+              <a class="nav-link" href="/pomodoro">Pomodoro Timer</a>
             </li>
           </ul>
         </div>
@@ -157,14 +161,98 @@
     </nav>
     <br />
 
-    <h2>Upload an Image</h2>
-
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      <label for="image">Choose an image to upload:</label><br />
-      <input type="file" name="image" id="image" required /><br /><br />
-      <button type="submit">Upload</button>
-    </form>
+    <div
+      class="main-content-wrapper"
+      style="
+        padding: 0 20px;
+        min-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+      "
+    >
+      <div
+        class="center-container"
+        style="
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <div><br /></div>
+        <div
+          class="image-gen-container"
+          style="
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 60px 40px 40px 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            margin: 0 auto;
+            display: inline-block;
+          "
+        >
+          <h2
+            style="
+              color: #fff;
+              text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+              margin-bottom: 30px;
+            "
+          >
+            Upload an Image
+          </h2>
+          <form
+            method="post"
+            enctype="multipart/form-data"
+            style="max-width: 500px; margin: 0 auto"
+          >
+            {% csrf_token %}
+            <label for="image" style="color: #f4f4f4; font-weight: 600"
+              >Choose an image to upload:</label
+            ><br />
+            <input
+              type="file"
+              name="image"
+              id="image"
+              required
+              style="
+                width: 100%;
+                padding: 12px;
+                margin-bottom: 20px;
+                border-radius: 8px;
+                border: 1px solid #ccc;
+                background-color: #333;
+                color: #fff;
+                font-size: 16px;
+                transition: background-color 0.3s ease;
+              "
+            /><br /><br />
+            <button
+              type="submit"
+              style="
+                background: linear-gradient(145deg, #ff6b6b, #f7b7a3);
+                color: white;
+                padding: 15px 30px;
+                border-radius: 10px;
+                border: none;
+                font-size: 18px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                width: 100%;
+                font-weight: bold;
+                position: relative;
+              "
+            >
+              Upload
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
 
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
