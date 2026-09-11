@@ -10,7 +10,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1','studybud-3joo.onrender.com', 'studybud.avsaikrishna.com']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')
 
 INSTALLED_APPS = [
     'apps',
